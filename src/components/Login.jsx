@@ -7,19 +7,56 @@ import axios from 'axios';
 function Login() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [otp, setOTP] = useState('');
+  const [showOTPField, setShowOTPField] = useState(false);
+  const [message, setMessage] = useState('');
+  const [token, setToken] = useState('');
+  const [sendOtpLoading, setSendOtpLoading] = useState(false);
+  const [verifyOtpLoading, setVerifyOtpLoading] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
 
   const sendOTP = async () => {
+    if (phoneNumber.trim() === '') {
+      setMessage('Please enter a phone number');
+      return;
+    }
+
     try {
+      setSendOtpLoading(true);
       const response = await axios.get(`https://rofabsbanking-backend.onrender.com/api/v1/auth/sendOtp?phoneNumber=${phoneNumber}`);
-      console.log(response.data); // Handle the response data as needed
+      setMessage(response.data.message);
+      setShowOTPField(true);
+      setOtpSent(true);
     } catch (error) {
-      console.error(error); // Handle errors
+      console.error(error);
+      setMessage('An error occurred while sending the OTP');
+    } finally {
+      setSendOtpLoading(false);
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle OTP submission or verification
+
+    if (otp.trim() === '') {
+      setMessage('Please enter the OTP');
+      return;
+    }
+
+    try {
+      console.log('URL: ', `https://rofabsbanking-backend.onrender.com/api/v1/auth/verifyOtp?phoneNumber=${phoneNumber}&otp=${otp}`);
+      setVerifyOtpLoading(true);
+      const response = await axios.post(`https://rofabsbanking-backend.onrender.com/api/v1/auth/verifyOtp?phoneNumber=${phoneNumber}&otp=${otp}`);
+      setMessage(response.data.Message);
+      setToken(response.data.Token);
+      localStorage.setItem('token', response.data.Token);
+
+      console.log(response.data.message);
+    } catch (error) {
+      console.error(error);
+      setMessage('An error occurred while verifying the OTP');
+    } finally {
+      setVerifyOtpLoading(false);
+    }
   };
 
   return (
@@ -66,23 +103,40 @@ function Login() {
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   className="outline-none w-full mb-5 lg:w-[45vw] border-b-2 font-display focus:outline-none focus:border-primarycolor transition-all duration-500 capitalize text-3xl"
+                  disabled={otpSent}
                 />
+
+                <button
+                  className="text-xl text-[#0095DA] hover:text-[#D5EEF9] rounded-md px-[3vw] bg-[#E5F6FD] hover:bg-[#0095DA] py-2 border-2 border-blue-300 mt-4"
+                  type="button"
+                  onClick={sendOTP}
+                  disabled={otpSent}
+                >
+                  {sendOtpLoading ? 'Sending OTP...' : 'Send OTP'}
+                </button>
               </div>
-              <div className="relative mt-8 w-full">
-                <input
-                  type="text"
-                  placeholder="OTP"
-                  value={otp}
-                  onChange={(e) => setOTP(e.target.value)}
-                  className="outline-none mb-5 w-full lg:w-[45vw] border-b-2 font-display focus:outline-none focus:border-primarycolor transition-all duration-500 capitalize text-3xl"
-                />
-              </div>
-              <button
-                className="text-xl text-[#0095DA] hover:text-[#D5EEF9] rounded-md px-[3vw] bg-[#E5F6FD] hover:bg-[#0095DA] py-2 border-2 border-blue-300 mt-4"
-                type="submit"
-              >
-                Verify OTP
-              </button>
+              {showOTPField && (
+                <div className="relative mt-8 w-full">
+                  <input
+                    type="text"
+                    placeholder="OTP"
+                    value={otp}
+                    onChange={(e) => setOTP(e.target.value)}
+                    className="outline-none mb-5 w-full lg:w-[45vw] border-b-2 font-display focus:outline-none focus:border-primarycolor transition-all duration-500 capitalize text-3xl"
+                  />
+
+                  <button
+                    className="text-xl text-[#0095DA] hover:text-[#D5EEF9] rounded-md px-[3vw] bg-[#E5F6FD] hover:bg-[#0095DA] py-2 border-2 border-blue-300 mt-4"
+                    type="submit"
+                    disabled={verifyOtpLoading}
+                  >
+                    {verifyOtpLoading ? 'Verifying OTP...' : 'Verify OTP'}
+                  </button>
+                </div>
+              )}
+              {message && (
+                <p className="text-center text-green-500 mt-4">{message}</p>
+              )}
             </form>
           </div>
         </div>
