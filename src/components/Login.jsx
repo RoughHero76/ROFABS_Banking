@@ -1,34 +1,43 @@
 import React, { useState } from "react";
-import SBILogo from '../utils/image/sbi.jpg';
-import YonoSBILogo from '../utils/image/SBI_YONO_Logo.svg';
-import RofabsLogo from '../utils/image/ROFABS.png';
-import axios from 'axios';
+import { useNavigate } from "react-router-dom";
+import SBILogo from "../utils/image/sbi.jpg";
+import YonoSBILogo from "../utils/image/SBI_YONO_Logo.svg";
+import RofabsLogo from "../utils/image/ROFABS.png";
+import axios from "axios";
+import { API_URL } from "../../secrets";
 
 function Login() {
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [otp, setOTP] = useState('');
+
+
+  const navigate = useNavigate();
+
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [otp, setOTP] = useState("");
   const [showOTPField, setShowOTPField] = useState(false);
-  const [message, setMessage] = useState('');
-  const [token, setToken] = useState('');
+  const [message, setMessage] = useState("");
+  const [token, setToken] = useState("");
   const [sendOtpLoading, setSendOtpLoading] = useState(false);
   const [verifyOtpLoading, setVerifyOtpLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
 
+
   const sendOTP = async () => {
-    if (phoneNumber.trim() === '') {
-      setMessage('Please enter a phone number');
+    if (phoneNumber.trim() === "") {
+      setMessage("Please enter a phone number");
       return;
     }
 
     try {
       setSendOtpLoading(true);
-      const response = await axios.get(`https://rofabsbanking-backend.onrender.com/api/v1/auth/sendOtp?phoneNumber=${phoneNumber}`);
+      const response = await axios.get(
+        `${API_URL}/api/v1/auth/sendOtp?phoneNumber=${phoneNumber}`
+      );
       setMessage(response.data.message);
       setShowOTPField(true);
       setOtpSent(true);
     } catch (error) {
       console.error(error);
-      setMessage('An error occurred while sending the OTP');
+      setMessage("An error occurred while sending the OTP");
     } finally {
       setSendOtpLoading(false);
     }
@@ -37,23 +46,27 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (otp.trim() === '') {
-      setMessage('Please enter the OTP');
+    if (otp.trim() === "") {
+      setMessage("Please enter the OTP");
       return;
     }
 
     try {
-      console.log('URL: ', `https://rofabsbanking-backend.onrender.com/api/v1/auth/verifyOtp?phoneNumber=${phoneNumber}&otp=${otp}`);
       setVerifyOtpLoading(true);
-      const response = await axios.post(`https://rofabsbanking-backend.onrender.com/api/v1/auth/verifyOtp?phoneNumber=${phoneNumber}&otp=${otp}`);
+      const response = await axios.post(
+        `${API_URL}/api/v1/auth/verifyOtp?phoneNumber=${phoneNumber}&otp=${otp}`
+      );
       setMessage(response.data.Message);
       setToken(response.data.Token);
-      localStorage.setItem('token', response.data.Token);
+      localStorage.setItem("token", response.data.Token);
+      localStorage.setItem("designation", response.data.Designation);
+      localStorage.setItem("name", response.data.Name);
+      console.log(response.data);
 
-      console.log(response.data.message);
+      navigate("/dashboard");
     } catch (error) {
       console.error(error);
-      setMessage('An error occurred while verifying the OTP');
+      setMessage("An error occurred while verifying the OTP");
     } finally {
       setVerifyOtpLoading(false);
     }
@@ -61,9 +74,9 @@ function Login() {
 
   return (
     <div className="relative flex justify-center items-center min-h-screen bg-gradient-to-br from-purple-900 to-pink-600">
-      <div className="rounded-2xl flex flex-col lg:flex-row h-auto lg:h-[95vh] w-[90vw] bg-white">
+      <div className="rounded-2xl overflow-hidden flex flex-col lg:flex-row h-auto lg:h-[95vh] w-[95%] lg:w-[95vw] bg-white justify-center items-center">
         {/* Left Side */}
-        <div className="relative object-cover overflow-hidden rounded-2xl h-[30vh] lg:h-full w-full lg:w-[45vw]">
+        <div className="hidden lg:flex relative object-cover overflow-hidden rounded-2xl h-[30vh] lg:h-full w-[60vw] lg:w-[45vw] justify-center items-center">
           <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
             <h5 className="absolute text-4xl font-semibold text-white left-[14%] mt-4 z-10 top-1">
               ROFABS BANKING
@@ -82,21 +95,27 @@ function Login() {
         </div>
 
         {/* Right Side */}
-        <div className="h-full p-6 flex flex-col items-center lg:items-center">
+        <div className="h-[90vh] w-[90vw] sm:h-[95vh] p-6 flex flex-col items-center lg:items-center overflowhidden ">
           <img
             className="w-[50%] lg:w-[18vw] mt-4 lg:mt-0"
             src={YonoSBILogo}
             alt="YONO Logo"
           />
-          <div className="w-full items-center justify-center mt-5 flex flex-col lg:text-center">
-            <p className="text-[#280071] text-xl lg:text-2xl font-bold">
-              Please enter your phone number and OTP
+          <div className="w-[90%] lg:w-[80%] items-center justify-center mt-5 flex flex-col lg:text-center">
+            <p className="text-[#280071] font-bold leading-tight text-lg sm:text-md md:text-xl lg:text-xl">
+              Please use your existing user ID and password (credentials) of
+              Corporate Internet Banking, eTrade, eForex, Supply Chain Finance
+              or Cash Management product to login to yono business, an
+              integrated platform for Business
             </p>
           </div>
 
-          <div className="w-full flex flex-col items-center lg:items-start">
-            <form onSubmit={handleSubmit} className="flex flex-col w-full items-center lg:items-start">
-              <div className="w-full relative mt-2 lg:mt-0">
+          <div className="w-full flex flex-col mt-5 lg:mt-[15%] items-center  lg:items-center justify-center">
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col w-full items-center lg:items-center justify-center"
+            >
+              <div className="w-full relative mt-[20%] lg:mt-0 flex flex-col items-center justify-center">
                 <input
                   type="text"
                   placeholder="Phone Number"
@@ -112,11 +131,11 @@ function Login() {
                   onClick={sendOTP}
                   disabled={otpSent}
                 >
-                  {sendOtpLoading ? 'Sending OTP...' : 'Send OTP'}
+                  {sendOtpLoading ? "Sending OTP..." : "Send OTP"}
                 </button>
               </div>
               {showOTPField && (
-                <div className="relative mt-8 w-full">
+                <div className="relative w-full flex flex-col items-center justify-center mt-5">
                   <input
                     type="text"
                     placeholder="OTP"
@@ -130,7 +149,7 @@ function Login() {
                     type="submit"
                     disabled={verifyOtpLoading}
                   >
-                    {verifyOtpLoading ? 'Verifying OTP...' : 'Verify OTP'}
+                    {verifyOtpLoading ? "Verifying OTP..." : "Verify OTP"}
                   </button>
                 </div>
               )}
@@ -139,6 +158,7 @@ function Login() {
               )}
             </form>
           </div>
+          <div></div>
         </div>
       </div>
     </div>
