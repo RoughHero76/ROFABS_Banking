@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import AdminDashboard from '../Views/Admin/AdminDashboard';
+import UserDashboard from '../Views/User/UserDashboard';
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -21,6 +22,8 @@ const Dashboard = () => {
 
     if (designation === 'Director') {
         return <AdminDashboard />;
+    } else {
+        return <UserDashboard />;
     }
 };
 

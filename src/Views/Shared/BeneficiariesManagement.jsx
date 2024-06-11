@@ -262,7 +262,11 @@ const BeneficiariesManagement = () => {
                                                         <div className="text-gray-500">Phone Number: {beneficiary.phoneNumber}</div>
                                                         <div className="text-gray-500">IFSC CODE: {beneficiary.ifscCode}</div>
                                                         <div className="text-gray-500">Type: {beneficiary.type}</div>
-                                                        <div className="text-gray-500">Status: {beneficiary.status}</div>
+                                                        <div className="text-gray-500">Status: {beneficiary.status}
+                                                            {
+                                                                beneficiary.status === "Active" ? null : <span className="text-gray-500 ml-3">Please Ask Admin To Activate It</span>
+                                                            }
+                                                        </div>
                                                     </div>
                                                     <div className="flex space-x-2">
                                                         <button

@@ -3,7 +3,7 @@ import React from 'react';
 
 const Alert = ({ message, onConfirm, onCancel }) => {
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
             <div className="bg-white p-6 rounded shadow">
                 <p className="text-lg font-bold mb-4">{message}</p>
                 <div className="flex justify-end">

@@ -39,10 +39,10 @@ const Header = () => {
                     <div className="flex items-center">
                         <button
                             onClick={goToHomePage}
-                            className="mr-4 flex items-center hover:text-gray-200"
+                            className="mr-4 flex items-center hover:text-gray-200 text-xl font-bold"
                         >
                             <FaHome className="mr-2" />
-                            Home
+                            Rofabs Banking
                         </button>
                         <h1 className="text-xl font-bold">Welcome, {name}</h1>
                     </div>
