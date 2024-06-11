@@ -1,139 +1,125 @@
-// src/Views/Admin/Parts/UserManagement.jsx
+// src/Views/Shared/BeneficiariesManagement.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { API_URL } from "../../../../secrets";
-import Sidebar from "../../../components/Sidebar";
-import Header from "../../../components/Header";
+import { API_URL } from "../../../secrets";
+import Sidebar from "../../components/Sidebar";
+import Header from "../../components/Header";
 import { BeatLoader } from "react-spinners";
-import Alert from "../../../components/Alert";
+import Alert from "../../components/Alert";
 import { toast } from "react-toastify";
 
-const UserManagement = () => {
+const BeneficiariesManagement = () => {
+
+    const userDesignation = localStorage.getItem("designation");
 
     const [searchQuery, setSearchQuery] = useState("");
-
-    const [users, setUsers] = useState([]);
+    const [beneficiaries, setBeneficiaries] = useState([]);
     const [showAlert, setShowAlert] = useState(false);
-    const [userToDelete, setUserToDelete] = useState(null);
-    const [selectedUser, setSelectedUser] = useState(null);
-
+    const [beneficiaryToDelete, setBeneficiaryToDelete] = useState(null);
+    const [selectedBeneficiary, setSelectedBeneficiary] = useState(null);
     const [formData, setFormData] = useState({
         name: "",
-        email: "",
+        accountNumber: "",
         phoneNumber: "",
-        password: "",
-        designation: "",
+        ifscCode: "",
+        type: "",
     });
     const [loading, setLoading] = useState(true);
     const [formLoading, setFormLoading] = useState(false);
 
     useEffect(() => {
-        fetchUsers();
+        fetchBeneficiaries();
     }, []);
 
     const handleSearch = (e) => {
         setSearchQuery(e.target.value);
     };
 
-    const filteredUsers = users.filter((user) => {
-        const { name, phoneNumber, designation } = user;
+    const filteredBeneficiaries = beneficiaries.filter((beneficiary) => {
+        const { name, phoneNumber, accountNumber } = beneficiary;
         const query = searchQuery.toLowerCase();
         return (
             name.toLowerCase().includes(query) ||
             phoneNumber.toLowerCase().includes(query) ||
-            designation.toLowerCase().includes(query)
+            accountNumber.toLowerCase().includes(query)
         );
     });
 
-
-    const fetchUsers = async () => {
+    const fetchBeneficiaries = async () => {
         try {
             setLoading(true);
             const token = localStorage.getItem("token");
-            const response = await axios.get(`${API_URL}/api/v1/admin/getUsers`, {
+            const response = await axios.get(`${API_URL}/api/v1/shared/getBeneficiaries`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            setUsers(response.data.data);
+            setBeneficiaries(response.data.data);
             setLoading(false);
-
-            console.log(response.data.data);
         } catch (error) {
-            console.error("Error fetching users:", error);
-            toast.error(error.response?.data?.message || "An error occurred");
+            console.error("Error fetching beneficiaries:", error);
             setLoading(false);
+            toast.error(error.response?.data?.message || "An error occurred");
         }
     };
 
-    const createUser = async () => {
+    const addBeneficiary = async () => {
         try {
             setFormLoading(true);
             const token = localStorage.getItem("token");
-            await axios.post(`${API_URL}/api/v1/admin/createUser`, formData, {
+            const response = await axios.post(`${API_URL}/api/v1/shared/addBeneficiary`, formData, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setFormData({
                 name: "",
-                email: "",
+                accountNumber: "",
                 phoneNumber: "",
-                password: "",
-                designation: "",
+                ifscCode: "",
+                type: "",
             });
-            fetchUsers();
+            fetchBeneficiaries();
             setFormLoading(false);
-
-            toast.success("User created successfully");
+            toast.success(response?.data?.message || "Beneficiary added successfully");
         } catch (error) {
-            console.error("Error creating user:", error);
-            toast.error(error.response?.data?.message || "An error occurred");
+            console.error("Error adding beneficiary:", error);
             setFormLoading(false);
+            toast.error(error.response?.data?.message || "An error occurred");
         }
     };
 
-    const updateUser = async () => {
+    const handleToggleBeneficiaryStatus = async (beneficiary) => {
         try {
-            setFormLoading(true);
             const token = localStorage.getItem("token");
-            await axios.post(
-                `${API_URL}/api/v1/admin/updateUser`,
-                { ...formData, uid: selectedUser.uid },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            setSelectedUser(null);
-            setFormData({
-                name: "",
-                email: "",
-                phoneNumber: "",
-                password: "",
-                designation: "",
-            });
-            fetchUsers();
-            setFormLoading(false);
+            const response = await axios.post(`${API_URL}/api/v1/admin/toggleBeneficiaryStatus`,
+                { accountNumber: beneficiary.accountNumber },
+                { headers: { Authorization: `Bearer ${token}` } });
+            await fetchBeneficiaries();
+            toast.success(response?.data?.message || "Beneficiary status toggled successfully");
         } catch (error) {
-            console.error("Error updating user:", error);
-            setFormLoading(false);
+            console.error("Error toggling beneficiary status:", error);
             toast.error(error.response?.data?.message || "An error occurred");
         }
     };
 
-    const deleteUser = (user) => {
-        setUserToDelete(user);
+    const deleteBeneficiary = (beneficiary) => {
+        setBeneficiaryToDelete(beneficiary);
         setShowAlert(true);
     };
-    const confirmDeleteUser = async () => {
+
+    const confirmDeleteBeneficiary = async () => {
         try {
             setLoading(true);
             const token = localStorage.getItem("token");
-            await axios.post(
-                `${API_URL}/api/v1/admin/deleteUser`,
-                { uid: userToDelete.uid },
+            const response = await axios.post(
+                `${API_URL}/api/v1/shared/deleteBeneficiary`,
+                { objectId: beneficiaryToDelete._id },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-            fetchUsers();
+            fetchBeneficiaries();
             setLoading(false);
             setShowAlert(false);
-            setUserToDelete(null);
+            setBeneficiaryToDelete(null);
+            toast.success(response?.data?.message || "Beneficiary deleted successfully");
         } catch (error) {
-            console.error("Error deleting user:", error);
+            console.error("Error deleting beneficiary:", error);
             setLoading(false);
             toast.error(error.response?.data?.message || "An error occurred");
         }
@@ -143,42 +129,6 @@ const UserManagement = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleEditUser = (user) => {
-        setSelectedUser(user);
-        setFormData({
-            name: user.name,
-            email: user.email,
-            phoneNumber: user.phoneNumber,
-            password: "",
-            designation: user.designation,
-        });
-    };
-
-    const handleCancelEdit = () => {
-        setSelectedUser(null);
-        setFormData({
-            name: "",
-            email: "",
-            phoneNumber: "",
-            password: "",
-            designation: "",
-        });
-    };
-
-
-    const toggleUserStatus = async (uid) => {
-        try {
-            const token = localStorage.getItem("token");
-            await axios.get(`${API_URL}/api/v1/admin/toggleUserStatus?uid=${uid}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            fetchUsers();
-        } catch (error) {
-            console.error("Error toggling user status:", error);
-            toast.error(error.response?.data?.message || "An error occurred");
-        }
-    };
-
     return (
         <div className="flex min-h-screen bg-gray-100">
             <Sidebar />
@@ -186,13 +136,11 @@ const UserManagement = () => {
                 <Header />
                 <main className="p-6 flex-1">
                     <div className="container mx-auto px-4 py-8">
-                        <h2 className="text-2xl font-bold mb-4">User Management</h2>
+                        <h2 className="text-2xl font-bold mb-4">Beneficiaries Management</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            {/* User Creation Form */}
+                            {/* Beneficiary Creation Form */}
                             <div className="bg-white shadow-md rounded-lg p-6">
-                                <h3 className="text-xl font-bold mb-4">
-                                    {selectedUser ? "Edit User" : "Create User"}
-                                </h3>
+                                <h3 className="text-xl font-bold mb-4">Add Beneficiary</h3>
                                 <div className="mb-4">
                                     <input
                                         type="text"
@@ -205,17 +153,17 @@ const UserManagement = () => {
                                 </div>
                                 <div className="mb-4">
                                     <input
-                                        type="email"
-                                        name="email"
-                                        value={formData.email}
+                                        type="text"
+                                        name="accountNumber"
+                                        value={formData.accountNumber}
                                         onChange={handleInputChange}
-                                        placeholder="Email"
+                                        placeholder="Account Number"
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     />
                                 </div>
                                 <div className="mb-4">
                                     <input
-                                        type="tel"
+                                        type="text"
                                         name="phoneNumber"
                                         value={formData.phoneNumber}
                                         onChange={handleInputChange}
@@ -225,43 +173,32 @@ const UserManagement = () => {
                                 </div>
                                 <div className="mb-4">
                                     <input
-                                        type="password"
-                                        name="password"
-                                        value={formData.password}
+                                        type="text"
+                                        name="ifscCode"
+                                        value={formData.ifscCode}
                                         onChange={handleInputChange}
-                                        placeholder="Password"
+                                        placeholder="IFSC Code"
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     />
                                 </div>
                                 <div className="mb-4">
                                     <select
-                                        name="designation"
-                                        value={formData.designation}
+                                        name="type"
+                                        value={formData.type}
                                         onChange={handleInputChange}
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     >
                                         <option value="" disabled>
-                                            Select Designation
+                                            Select Type
                                         </option>
-                                        <option value="CEO">CEO</option>
-                                        <option value="CMO">CMO</option>
-                                        <option value="CFO">CFO</option>
-                                        <option value="Auditor">Auditor</option>
-                                        <option value="Accountant">Accountant</option>
+                                        <option value="Vendor">Vendor</option>
                                         <option value="Employee">Employee</option>
+                                        <option value="Director">Director</option>
                                     </select>
                                 </div>
                                 <div className="flex justify-end">
-                                    {selectedUser && (
-                                        <button
-                                            onClick={handleCancelEdit}
-                                            className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 mr-2"
-                                        >
-                                            Cancel
-                                        </button>
-                                    )}
                                     <button
-                                        onClick={selectedUser ? updateUser : createUser}
+                                        onClick={addBeneficiary}
                                         className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
                                         disabled={formLoading}
                                     >
@@ -289,31 +226,19 @@ const UserManagement = () => {
                                                 </svg>
                                                 Loading...
                                             </span>
-                                        ) : selectedUser ? (
-                                            "Update User"
                                         ) : (
-                                            "Create User"
+                                            "Add Beneficiary"
                                         )}
                                     </button>
                                 </div>
                             </div>
 
-                            {/* User List */}
+                            {/* Beneficiary List */}
                             <div className="bg-white shadow-md rounded-lg p-6">
-                                <div className="flex justify-between items-center mb-4">
-                                    <h3 className="text-xl font-bold">Users</h3>
-                                    {selectedUser && (
-                                        <button
-                                            onClick={handleCancelEdit}
-                                            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                                        >
-                                            Create User
-                                        </button>
-                                    )}
-                                </div>
+                                <h3 className="text-xl font-bold mb-4">Beneficiaries</h3>
                                 <input
                                     type="text"
-                                    placeholder="Search by name, phone number, or designation"
+                                    placeholder="Search by name, phone number, or account number"
                                     value={searchQuery}
                                     onChange={handleSearch}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
@@ -321,51 +246,49 @@ const UserManagement = () => {
                                 {loading ? (
                                     <div className="text-center">
                                         <BeatLoader color="#3B82F6" loading={loading} size={10} />
-                                        <span className="text-gray-500">Loading users...</span>
+                                        <span className="text-gray-500">Loading beneficiaries...</span>
                                     </div>
                                 ) : (
-                                    <div className="max-h-96 overflow-y-auto no-scrollbar">
+                                    <div className="max-h-96 overflow-y-auto">
                                         <ul className="space-y-4">
-                                            {filteredUsers.map((user) => (
+                                            {filteredBeneficiaries.map((beneficiary) => (
                                                 <li
-                                                    key={user.uid}
+                                                    key={beneficiary._id}
                                                     className="flex items-center justify-between border-b border-gray-200 pb-4"
                                                 >
                                                     <div>
-                                                        <div className="font-bold">{user.name}</div>
-                                                        <div className="text-gray-500">{user.email}</div>
-                                                        <div className="text-gray-500">{user.phoneNumber}</div>
-                                                        <div className="text-gray-500">{user.designation}</div>
-                                                        <div className="text-gray-500">{user.status}</div>
+                                                        <div className="font-bold">Name: {beneficiary.name}</div>
+                                                        <div className="text-gray-500">Account Number: {beneficiary.accountNumber}</div>
+                                                        <div className="text-gray-500">Phone Number: {beneficiary.phoneNumber}</div>
+                                                        <div className="text-gray-500">IFSC CODE: {beneficiary.ifscCode}</div>
+                                                        <div className="text-gray-500">Type: {beneficiary.type}</div>
+                                                        <div className="text-gray-500">Status: {beneficiary.status}</div>
                                                     </div>
                                                     <div className="flex space-x-2">
                                                         <button
-                                                            onClick={() => handleEditUser(user)}
-                                                            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                                                        >
-                                                            Edit
-                                                        </button>
-                                                        <button
-                                                            onClick={() => deleteUser(user)}
+                                                            onClick={() => deleteBeneficiary(beneficiary)}
                                                             className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
                                                         >
                                                             Delete
                                                         </button>
-                                                        <button
-                                                            onClick={() => toggleUserStatus(user.uid)}
-                                                            className={`px-4 py-2 rounded-md text-white ${user.status === "Active"
-                                                                ? "bg-red-500 hover:bg-red-600"
-                                                                : "bg-green-500 hover:bg-green-600"
-                                                                }`}
-                                                        >
-                                                            {user.status === "Active" ? "Deactivate" : "Activate"}
-                                                        </button>
+
+                                                        {
+                                                            userDesignation === "Director" && <button
+                                                                onClick={() => handleToggleBeneficiaryStatus(beneficiary)}
+                                                                className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+                                                            >
+                                                                Toggle Status
+                                                            </button>
+
+                                                        }
+
                                                     </div>
+
+
                                                 </li>
                                             ))}
                                         </ul>
                                     </div>
-
                                 )}
                             </div>
                         </div>
@@ -374,8 +297,8 @@ const UserManagement = () => {
             </div>
             {showAlert && (
                 <Alert
-                    message={`Are you sure you want to delete ${userToDelete.name}?`}
-                    onConfirm={confirmDeleteUser}
+                    message={`Are you sure you want to delete ${beneficiaryToDelete.name}?`}
+                    onConfirm={confirmDeleteBeneficiary}
                     onCancel={() => setShowAlert(false)}
                 />
             )}
@@ -383,4 +306,4 @@ const UserManagement = () => {
     );
 };
 
-export default UserManagement;
+export default BeneficiariesManagement;

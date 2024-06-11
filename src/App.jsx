@@ -6,6 +6,7 @@ import LoginPageFirst from './components/LoginPageFirst';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import UserManagement from './Views/Admin/Parts/UserManagement';
+import BeneficiariesManagement from './Views/Shared/BeneficiariesManagement';
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/userManagement" element={<UserManagement />} />
+        <Route path="/beneficiariesManagement" element={<BeneficiariesManagement />} />
       </Routes>
       <ToastContainer />
     </>

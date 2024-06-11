@@ -30,6 +30,10 @@ const AdminDashboard = () => {
     navigate('/userManagement');
   };
 
+  const handleBeneficiaryManagement = () => {
+    navigate('/beneficiariesManagement');
+  };
+
   return (
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar />
@@ -42,7 +46,7 @@ const AdminDashboard = () => {
               <FaUsers className="mr-2" />
               User Management
             </button>
-            <button className="bg-teal-500 text-white font-bold py-4 px-6 rounded-lg flex items-center justify-center shadow-lg transform transition-transform hover:scale-105 hover:shadow-xl">
+            <button onClick={handleBeneficiaryManagement} className="bg-teal-500 text-white font-bold py-4 px-6 rounded-lg flex items-center justify-center shadow-lg transform transition-transform hover:scale-105 hover:shadow-xl">
               <FaHandHoldingHeart className="mr-2" />
               Beneficiary Management
             </button>
