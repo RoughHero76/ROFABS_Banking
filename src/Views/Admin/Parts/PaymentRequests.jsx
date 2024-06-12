@@ -46,6 +46,7 @@ const PaymentRequests = () => {
             return obj;
         }, {});
         setRequesters(requestersData);
+        
     };
 
     const updatePaymentStatus = async (paymentId, status) => {
@@ -100,6 +101,7 @@ const PaymentRequests = () => {
                                                     <div>
                                                         <span className="font-bold text-lg">Amount: {request.amount}</span>
                                                         <span className="ml-4 text-gray-600">Requester: {requesters[request.PaymentRequestMadeBy]}</span>
+                                                        
                                                     </div>
                                                     <div>
                                                         {expandedRequests.includes(request._id) ? <FaChevronUp /> : <FaChevronDown />}
