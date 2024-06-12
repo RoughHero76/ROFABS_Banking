@@ -104,20 +104,18 @@ const UserDashboard = () => {
             )}
 
             {!isEmployee && (
-              <div className="relative">
-                <button
-                  onClick={handlePendingPaymentRequests}
-                  className="bg-red-500 text-white font-bold py-4 px-6 rounded-lg flex items-center justify-center shadow-lg transform transition-transform hover:scale-105 hover:shadow-xl"
-                >
-                  <FaMoneyCheckAlt className="mr-2" />
-                  Pending Payment Requests
-                </button>
+              <button
+                onClick={handlePendingPaymentRequests}
+                className="bg-red-500 text-white font-bold py-4 px-6 rounded-lg flex items-center justify-center shadow-lg transform transition-transform hover:scale-105 hover:shadow-xl"
+              >
+                <FaMoneyCheckAlt className="mr-2" />
+                <span>Pending Payment Requests</span>
                 {countOfPendingRequests > 0 && (
-                  <div className="absolute top-0 right-0 mt-1 mr-1 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">
+                  <span className="ml-2 bg-white text-black rounded-full w-6 h-6 flex items-center justify-center text-xs">
                     {countOfPendingRequests}
-                  </div>
+                  </span>
                 )}
-              </div>
+              </button>
             )}
           </div>
 
