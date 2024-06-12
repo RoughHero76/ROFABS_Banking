@@ -1,21 +1,24 @@
-// src/Views/Admin/Parts/PaymentRequests.jsx
+// src/Views/Shared/PendingPaymentRequests.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { API_URL } from "../../../../secrets";
-import Sidebar from "../../../components/Sidebar";
-import Header from "../../../components/Header";
+import { API_URL } from "../../../secrets";
+import Sidebar from "../../components/Sidebar";
+import Header from "../../components/Header";
 import { BeatLoader } from "react-spinners";
 import { toast } from "react-toastify";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
-const PaymentRequests = () => {
-    const [paymentRequests, setPaymentRequests] = useState([]);
-    const [requesters, setRequesters] = useState({});
+const PendingPaymentRequests = () => {
+    const [pendingRequests, setPendingRequests] = useState([]);
     const [expandedRequests, setExpandedRequests] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetchPendingRequests();
+        const getPendingRequests = async () => {
+            const pendingRequests = await fetchPendingRequests();
+            setPendingRequests(pendingRequests);
+        };
+        getPendingRequests();
     }, []);
 
     const fetchPendingRequests = async () => {
@@ -25,45 +28,49 @@ const PaymentRequests = () => {
             const response = await axios.get(`${API_URL}/api/v1/shared/getPendingRequests`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            setPaymentRequests(response.data.data);
-            await fetchRequesters(response.data.data);
             setLoading(false);
+            return response.data.data;
         } catch (error) {
             console.error("Error fetching pending requests:", error);
-            toast.error(error.response?.data?.message || "An error occurred");
             setLoading(false);
+            toast.error(error.response?.data?.message || "An error occurred while fetching pending requests");
+            return [];
         }
     };
 
-    const fetchRequesters = async (requests) => {
-        const uids = requests.map((request) => request.PaymentRequestMadeBy);
-        const token = localStorage.getItem("token");
-        const response = await axios.get(`${API_URL}/api/v1/admin/getUsers?uids=${uids.join(",")}`, {
-            headers: { Authorization: `Bearer ${token}` },
-        });
-        const requestersData = response.data.data.reduce((obj, user) => {
-            obj[user.uid] = user.name;
-            return obj;
-        }, {});
-        setRequesters(requestersData);
-    };
-
-    const updatePaymentStatus = async (paymentId, status) => {
+    const updateApprovalStatus = async (paymentRequestId, approvalStatus) => {
         try {
             const token = localStorage.getItem("token");
-            await axios.post(
-                `${API_URL}/api/v1/admin/updatePaymentStatus/${status}`,
-                { paymentId },
+            
+
+            const response = await axios.post(
+                `${API_URL}/api/v1/shared/updateApprovalPayment`,
+                { paymentRequestId, approvalStatus },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-            fetchPendingRequests();
-            toast.success(`Payment status updated to ${status}`);
+
+            if (response.data.status === 'success') {
+                const updatedRequests = await fetchPendingRequests();
+
+                if (updatedRequests.length === 0) {
+                    setPendingRequests([]);
+                    toast.success("No pending requests found");
+                } else {
+                    setPendingRequests(updatedRequests);
+                    toast.success(response.data.message);
+                }
+            } else {
+                toast.error(response.data.message);
+            }
         } catch (error) {
-            console.error("Error updating payment status:", error);
-            toast.error(error.response?.data?.message || "An error occurred");
+            console.error("Error updating approval status:", error);
+            if (error.response) {
+                toast.error(error.response.data.message || "An error occurred");
+            } else {
+                toast.error("An error occurred");
+            }
         }
     };
-
     const toggleRequestExpansion = (requestId) => {
         if (expandedRequests.includes(requestId)) {
             setExpandedRequests(expandedRequests.filter((id) => id !== requestId));
@@ -79,19 +86,19 @@ const PaymentRequests = () => {
                 <Header />
                 <main className="p-6 flex-1">
                     <div className="container mx-auto px-4 py-8">
-                        <h2 className="text-2xl font-bold mb-4">Payment Requests</h2>
+                        <h2 className="text-2xl font-bold mb-4">Pending Payment Requests</h2>
                         <div className="bg-white shadow-md rounded-lg p-6">
                             {loading ? (
                                 <div className="text-center">
                                     <BeatLoader color="#3B82F6" loading={loading} size={10} />
-                                    <span className="text-gray-500">Loading payment requests...</span>
+                                    <span className="text-gray-500">Loading pending requests...</span>
                                 </div>
-                            ) : paymentRequests.length === 0 ? (
-                                <div className="text-center text-gray-500">No payment requests found.</div>
+                            ) : pendingRequests.length === 0 ? (
+                                <div className="text-center text-gray-500">No pending requests found.</div>
                             ) : (
                                 <div className="max-h-96 overflow-y-auto no-scrollbar">
                                     <ul className="space-y-6">
-                                        {paymentRequests.map((request) => (
+                                        {pendingRequests.map((request) => (
                                             <li key={request._id} className="border border-gray-200 rounded-lg p-4">
                                                 <div
                                                     className="flex items-center justify-between cursor-pointer bg-gray-100 p-2 rounded-lg"
@@ -99,7 +106,7 @@ const PaymentRequests = () => {
                                                 >
                                                     <div>
                                                         <span className="font-bold text-lg">Amount: {request.amount}</span>
-                                                        <span className="ml-4 text-gray-600">Requester: {requesters[request.PaymentRequestMadeBy]}</span>
+                                                        <span className="ml-4 text-gray-600">Payment Made For: {request.paymentMadeFor}</span>
                                                     </div>
                                                     <div>
                                                         {expandedRequests.includes(request._id) ? <FaChevronUp /> : <FaChevronDown />}
@@ -107,9 +114,6 @@ const PaymentRequests = () => {
                                                 </div>
                                                 {expandedRequests.includes(request._id) && (
                                                     <div className="mt-4 space-y-2">
-                                                        <div>
-                                                            <span className="font-bold">Payment Made For:</span> {request.paymentMadeFor || "Not Available"}
-                                                        </div>
                                                         <div>
                                                             <span className="font-bold">Payment Method:</span> {request.paymentMethod || "Not Available"}
                                                         </div>
@@ -125,10 +129,7 @@ const PaymentRequests = () => {
                                                         <div>
                                                             <span className="font-bold">UPI Number:</span> {request.upiNumber || "Not Available"}
                                                         </div>
-                                                        <div>
-                                                            <span className="font-bold">Status:</span> {request.status || "Not Available"}
-                                                        </div>
-                                                        <div className="mt-4">
+                                                        <div className="mt-4 space-y-2">
                                                             <div>
                                                                 <span className="font-bold">CFO Approval:</span> {request.CFOApproval}
                                                             </div>
@@ -139,15 +140,15 @@ const PaymentRequests = () => {
                                                                 <span className="font-bold">CEO Approval:</span> {request.CEOApproval}
                                                             </div>
                                                         </div>
-                                                        <div className="flex space-x-4 mt-6">
+                                                        <div className="mt-4 space-x-4">
                                                             <button
-                                                                onClick={() => updatePaymentStatus(request._id, "Completed")}
+                                                                onClick={() => updateApprovalStatus(request._id, "Approved")}
                                                                 className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
                                                             >
-                                                                Complete
+                                                                Approve
                                                             </button>
                                                             <button
-                                                                onClick={() => updatePaymentStatus(request._id, "Rejected")}
+                                                                onClick={() => updateApprovalStatus(request._id, "Rejected")}
                                                                 className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
                                                             >
                                                                 Reject
@@ -168,4 +169,4 @@ const PaymentRequests = () => {
     );
 };
 
-export default PaymentRequests;
+export default PendingPaymentRequests;

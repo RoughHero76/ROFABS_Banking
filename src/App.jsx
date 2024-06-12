@@ -9,6 +9,7 @@ import UserManagement from './Views/Admin/Parts/UserManagement';
 import BeneficiariesManagement from './Views/Shared/BeneficiariesManagement';
 import MakePaymentRequests from './Views/Shared/MakePaymentRequests';
 import PaymentRequests from './Views/Admin/Parts/PaymentRequests';
+import PendingPaymentRequests from './Views/Shared/PendingPaymentRequests';
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
         <Route path="/beneficiariesManagement" element={<BeneficiariesManagement />} />
         <Route path="/makePaymentRequests" element={<MakePaymentRequests />} />
         <Route path="/paymentRequests" element={<PaymentRequests />} />
+        <Route path="/pendingPaymentRequests" element={<PendingPaymentRequests />} />
       </Routes>
       <ToastContainer />
     </>

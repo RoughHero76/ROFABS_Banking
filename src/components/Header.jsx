@@ -34,7 +34,7 @@ const Header = () => {
 
     return (
         <>
-            <header className="bg-indigo-600 py-4 px-6">
+            <header className="bg-gradient-to-r from-blue-500 to-blue-800 py-4 px-6">
                 <div className="flex justify-between items-center text-white">
                     <div className="flex items-center">
                         <button

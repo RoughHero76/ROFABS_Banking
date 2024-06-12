@@ -69,6 +69,7 @@ const PaymentRequestsContainer = () => {
                                         )}
                                         <div className="text-gray-500">Amount: {request.amount}</div>
                                         <div className="text-gray-500">Status: {request.status}</div>
+                                      
                                     </div>
                                 )}
                             </li>

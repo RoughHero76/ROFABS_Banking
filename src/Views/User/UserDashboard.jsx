@@ -6,11 +6,15 @@ import Header from '../../components/Header';
 import Sidebar from '../../components/Sidebar';
 import PaymentRequestsContainer from '../Shared/PaymentRequestsContainer';
 import { BeatLoader } from "react-spinners";
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { API_URL } from '../../../secrets';
 
 const UserDashboard = () => {
   const navigate = useNavigate();
   const [designation, setDesignation] = useState('');
   const [token, setToken] = useState('');
+  const [countOfPendingRequests, setCountOfPendingRequests] = useState(0);
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
@@ -24,12 +28,35 @@ const UserDashboard = () => {
     }
   }, [navigate]);
 
+  useEffect(() => {
+    if (token && designation !== 'Employee') {
+      fetchCountOfPendingRequests();
+    }
+  }, [token, designation]);
+
+  const fetchCountOfPendingRequests = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/api/v1/shared/getCountOfPendingRequests`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const count = response.data.data;
+      setCountOfPendingRequests(count);
+    } catch (error) {
+      console.error("Error fetching count of pending requests:", error);
+      toast.error(error.response?.data?.message || "An error occurred while fetching count of pending requests");
+    }
+  };
+
   const handleBeneficiaryManagement = () => {
     navigate('/beneficiariesManagement');
   };
 
   const handleMakePaymentRequest = () => {
     navigate('/makePaymentRequests');
+  };
+
+  const handlePendingPaymentRequests = () => {
+    navigate('/pendingPaymentRequests');
   };
 
   if (!designation) {
@@ -75,14 +102,30 @@ const UserDashboard = () => {
                 Make Payment Requests
               </button>
             )}
+
+            {!isEmployee && (
+              <div className="relative">
+                <button
+                  onClick={handlePendingPaymentRequests}
+                  className="bg-red-500 text-white font-bold py-4 px-6 rounded-lg flex items-center justify-center shadow-lg transform transition-transform hover:scale-105 hover:shadow-xl"
+                >
+                  <FaMoneyCheckAlt className="mr-2" />
+                  Pending Payment Requests
+                </button>
+                {countOfPendingRequests > 0 && (
+                  <div className="absolute top-0 right-0 mt-1 mr-1 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">
+                    {countOfPendingRequests}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
-          {!isEmployee &&
+          {!isEmployee && (
             <div className="mt-8">
               <PaymentRequestsContainer />
             </div>
-          }
-
+          )}
         </main>
       </div>
     </div>
