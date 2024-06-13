@@ -10,7 +10,7 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className={`bg-gradient-to-b from-blue-500 to-blue-800 text-white ${isExpanded ? 'w-64' : 'w-16'} min-h-screen transition-width duration-300 shadow-lg`}>
+    <aside className={`bg-gradient-to-b from-reddish-purple to-deep-purple text-white ${isExpanded ? 'w-64' : 'w-16'} min-h-screen transition-width duration-300 shadow-lg`}>
       <div className="flex items-center justify-center py-6">
         <button onClick={toggleSidebar} className="text-2xl focus:outline-none">
           <FaBars />

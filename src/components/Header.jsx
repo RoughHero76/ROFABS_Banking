@@ -35,7 +35,7 @@ const Header = () => {
 
   return (
     <>
-      <header className="bg-gradient-to-r from-blue-500 to-blue-800 py-4 px-6">
+      <header className="bg-gradient-to-r from-reddish-purple to-deep-purple py-4 px-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between text-white">
           <div className="flex flex-col md:flex-row md:items-center mb-4 md:mb-0">
             <button
