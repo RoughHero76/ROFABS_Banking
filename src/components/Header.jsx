@@ -42,27 +42,28 @@ const Header = () => {
               onClick={goToHomePage}
               className="mr-4 flex items-center hover:text-gray-200 text-lg font-bold mb-2 md:mb-0"
             >
-              <FaHome className="mr-2" />
-            {/*   Rofabs Banking */}
+              <FaHome className="mr-2  hover:scale-105" />
+              {/*   Rofabs Banking */}
             </button>
             <h1 className="text-lg font-bold">Welcome, {name}</h1>
           </div>
           <nav>
             <ul className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
               <li>
-                <a href="#" className="flex items-center hover:text-gray-200">
+                <div onClick={() => navigate('/profile')} className="flex items-center hover:text-gray-200 cursor-pointer  hover:scale-105">
                   <FaUser className="mr-2" />
                   Profile
-                </a>
+                </div>
               </li>
               <li>
-                <button onClick={handleLogout} className="flex items-center hover:text-gray-200">
+                <div onClick={handleLogout} className="flex items-center hover:text-gray-200 cursor-pointer hover:scale-105">
                   <FaSignOutAlt className="mr-2" />
                   Logout
-                </button>
+                </div>
               </li>
             </ul>
           </nav>
+
         </div>
       </header>
       {showAlert && (

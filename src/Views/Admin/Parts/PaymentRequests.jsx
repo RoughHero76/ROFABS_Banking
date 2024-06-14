@@ -7,6 +7,7 @@ import Header from "../../../components/Header";
 import { BeatLoader } from "react-spinners";
 import { toast } from "react-toastify";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { motion } from 'framer-motion';
 
 const PaymentRequests = () => {
     const [paymentRequests, setPaymentRequests] = useState([]);
@@ -46,7 +47,7 @@ const PaymentRequests = () => {
             return obj;
         }, {});
         setRequesters(requestersData);
-        
+
     };
 
     const updatePaymentStatus = async (paymentId, status) => {
@@ -78,92 +79,98 @@ const PaymentRequests = () => {
             <Sidebar />
             <div className="flex-1 flex flex-col">
                 <Header />
-                <main className="p-6 flex-1">
-                    <div className="container mx-auto px-4 py-8">
-                        <h2 className="text-2xl font-bold mb-4">Payment Requests</h2>
-                        <div className="bg-white shadow-md rounded-lg p-6">
-                            {loading ? (
-                                <div className="text-center">
-                                    <BeatLoader color="#3B82F6" loading={loading} size={10} />
-                                    <span className="text-gray-500">Loading payment requests...</span>
-                                </div>
-                            ) : paymentRequests.length === 0 ? (
-                                <div className="text-center text-gray-500">No payment requests found.</div>
-                            ) : (
-                                <div className="max-h-96 overflow-y-auto no-scrollbar">
-                                    <ul className="space-y-6">
-                                        {paymentRequests.map((request) => (
-                                            <li key={request._id} className="border border-gray-200 rounded-lg p-4">
-                                                <div
-                                                    className="flex items-center justify-between cursor-pointer bg-gray-100 p-2 rounded-lg"
-                                                    onClick={() => toggleRequestExpansion(request._id)}
-                                                >
-                                                    <div>
-                                                        <span className="font-bold text-lg">Amount: {request.amount}</span>
-                                                        <span className="ml-4 text-gray-600">Requester: {requesters[request.PaymentRequestMadeBy]}</span>
-                                                        
-                                                    </div>
-                                                    <div>
-                                                        {expandedRequests.includes(request._id) ? <FaChevronUp /> : <FaChevronDown />}
-                                                    </div>
-                                                </div>
-                                                {expandedRequests.includes(request._id) && (
-                                                    <div className="mt-4 space-y-2">
+                <main className="p-2 flex-1">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.7, ease: 'easeInOut' }}
+                    >
+                        <div className="container mx-auto px-4 py-2">
+                            <h2 className="text-2xl font-bold mb-4">Payment Requests</h2>
+                            <div className="bg-white shadow-md rounded-lg p-6">
+                                {loading ? (
+                                    <div className="text-center">
+                                        <BeatLoader color="#3B82F6" loading={loading} size={10} />
+                                        <span className="text-gray-500">Loading payment requests...</span>
+                                    </div>
+                                ) : paymentRequests.length === 0 ? (
+                                    <div className="text-center text-gray-500">No payment requests found.</div>
+                                ) : (
+                                    <div className="max-h-96 overflow-y-auto no-scrollbar">
+                                        <ul className="space-y-6">
+                                            {paymentRequests.map((request) => (
+                                                <li key={request._id} className="border border-gray-200 rounded-lg p-4">
+                                                    <div
+                                                        className="flex items-center justify-between cursor-pointer bg-gray-100 p-2 rounded-lg"
+                                                        onClick={() => toggleRequestExpansion(request._id)}
+                                                    >
                                                         <div>
-                                                            <span className="font-bold">Payment Made For:</span> {request.paymentMadeFor || "Not Available"}
+                                                            <span className="font-bold text-lg">Amount: {request.amount}</span>
+                                                            <span className="ml-4 text-gray-600">Requester: {requesters[request.PaymentRequestMadeBy]}</span>
+
                                                         </div>
                                                         <div>
-                                                            <span className="font-bold">Payment Method:</span> {request.paymentMethod || "Not Available"}
-                                                        </div>
-                                                        <div>
-                                                            <span className="font-bold">Account Holder Name:</span> {request.accountHolderName || "Not Available"}
-                                                        </div>
-                                                        <div>
-                                                            <span className="font-bold">Account Number:</span> {request.accountNumber || "Not Available"}
-                                                        </div>
-                                                        <div>
-                                                            <span className="font-bold">IFSC Code:</span> {request.ifscCode || "Not Available"}
-                                                        </div>
-                                                        <div>
-                                                            <span className="font-bold">UPI Number:</span> {request.upiNumber || "Not Available"}
-                                                        </div>
-                                                        <div>
-                                                            <span className="font-bold">Status:</span> {request.status || "Not Available"}
-                                                        </div>
-                                                        <div className="mt-4">
-                                                            <div>
-                                                                <span className="font-bold">CFO Approval:</span> {request.CFOApproval}
-                                                            </div>
-                                                            <div>
-                                                                <span className="font-bold">CMO Approval:</span> {request.CMOApproval}
-                                                            </div>
-                                                            <div>
-                                                                <span className="font-bold">CEO Approval:</span> {request.CEOApproval}
-                                                            </div>
-                                                        </div>
-                                                        <div className="flex space-x-4 mt-6">
-                                                            <button
-                                                                onClick={() => updatePaymentStatus(request._id, "Completed")}
-                                                                className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
-                                                            >
-                                                                Complete
-                                                            </button>
-                                                            <button
-                                                                onClick={() => updatePaymentStatus(request._id, "Rejected")}
-                                                                className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
-                                                            >
-                                                                Reject
-                                                            </button>
+                                                            {expandedRequests.includes(request._id) ? <FaChevronUp /> : <FaChevronDown />}
                                                         </div>
                                                     </div>
-                                                )}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            )}
+                                                    {expandedRequests.includes(request._id) && (
+                                                        <div className="mt-4 space-y-2">
+                                                            <div>
+                                                                <span className="font-bold">Payment Made For:</span> {request.paymentMadeFor || "Not Available"}
+                                                            </div>
+                                                            <div>
+                                                                <span className="font-bold">Payment Method:</span> {request.paymentMethod || "Not Available"}
+                                                            </div>
+                                                            <div>
+                                                                <span className="font-bold">Account Holder Name:</span> {request.accountHolderName || "Not Available"}
+                                                            </div>
+                                                            <div>
+                                                                <span className="font-bold">Account Number:</span> {request.accountNumber || "Not Available"}
+                                                            </div>
+                                                            <div>
+                                                                <span className="font-bold">IFSC Code:</span> {request.ifscCode || "Not Available"}
+                                                            </div>
+                                                            <div>
+                                                                <span className="font-bold">UPI Number:</span> {request.upiNumber || "Not Available"}
+                                                            </div>
+                                                            <div>
+                                                                <span className="font-bold">Status:</span> {request.status || "Not Available"}
+                                                            </div>
+                                                            <div className="mt-4">
+                                                                <div>
+                                                                    <span className="font-bold">CFO Approval:</span> {request.CFOApproval}
+                                                                </div>
+                                                                <div>
+                                                                    <span className="font-bold">CMO Approval:</span> {request.CMOApproval}
+                                                                </div>
+                                                                <div>
+                                                                    <span className="font-bold">CEO Approval:</span> {request.CEOApproval}
+                                                                </div>
+                                                            </div>
+                                                            <div className="flex space-x-4 mt-6">
+                                                                <button
+                                                                    onClick={() => updatePaymentStatus(request._id, "Completed")}
+                                                                    className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+                                                                >
+                                                                    Complete
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => updatePaymentStatus(request._id, "Rejected")}
+                                                                    className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+                                                                >
+                                                                    Reject
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                    </div>
+                    </motion.div>
                 </main>
             </div>
         </div>
