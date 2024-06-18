@@ -5,6 +5,7 @@ import YonoSBILogo from "../utils/image/SBI_YONO_Logo.svg";
 import RofabsLogo from "../utils/image/ROFABS.png";
 import axios from "axios";
 import { API_URL } from "../../secrets";
+import jwtDecode from 'jwt-decode';
 
 function Login() {
 
@@ -22,9 +23,21 @@ function Login() {
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
-      navigate("/dashboard");
+      isTokenExpired(localStorage.getItem("token")) ? navigate("/login") : navigate("/dashboard");
     }
   }, [navigate]);
+
+  const isTokenExpired = (token) => {
+    if (!token) return true;
+    try {
+      const decodedToken = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      return decodedToken.exp < currentTime;
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return true;
+    }
+  };
 
 
   const sendOTP = async () => {
