@@ -5,7 +5,7 @@ import YonoSBILogo from "../utils/image/SBI_YONO_Logo.svg";
 import RofabsLogo from "../utils/image/ROFABS.png";
 import axios from "axios";
 import { API_URL } from "../../secrets";
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from "jwt-decode";
 
 function Login() {
 
