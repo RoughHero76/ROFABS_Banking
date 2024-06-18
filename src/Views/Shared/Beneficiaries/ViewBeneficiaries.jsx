@@ -8,6 +8,7 @@ import Alert from "../../../components/Alert";
 import { motion } from 'framer-motion';
 import Sidebar from "../../../components/Sidebar";
 import Header from "../../../components/Header";
+import { FaStar, FaCheckCircle, FaTimesCircle, FaTrash, FaPause, FaPlay } from "react-icons/fa";
 
 const ViewBeneficiaries = () => {
     const userDesignation = localStorage.getItem("designation");
@@ -17,6 +18,8 @@ const ViewBeneficiaries = () => {
     const [showAlert, setShowAlert] = useState(false);
     const [beneficiaryToDelete, setBeneficiaryToDelete] = useState(null);
     const [loading, setLoading] = useState(true);
+
+    const [isNewBeneficiary, setIsNewBeneficiary] = useState(false);
 
     useEffect(() => {
         fetchBeneficiaries();
@@ -43,14 +46,34 @@ const ViewBeneficiaries = () => {
             const response = await axios.get(`${API_URL}/api/v1/shared/getBeneficiaries`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            setBeneficiaries(response.data.data);
+            const beneficiariesData = response.data.data;
+            const currentDate = new Date();
+            const newBeneficiaries = beneficiariesData.map((beneficiary) => {
+                const createdAt = new Date(beneficiary.createdAt);
+                const timeDiff = currentDate - createdAt;
+                const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                return { ...beneficiary, isNew: daysDiff <= 7 }; // Consider beneficiaries added within the last 7 days as new
+            });
+            setBeneficiaries(newBeneficiaries);
+            setIsNewBeneficiary(newBeneficiaries.some((beneficiary) => beneficiary.isNew));
             setLoading(false);
+            console.log('beneficiaries: ', newBeneficiaries);
         } catch (error) {
             console.error("Error fetching beneficiaries:", error);
             setLoading(false);
             toast.error(error.response?.data?.message || "An error occurred");
         }
     };
+
+    const sortedBeneficiaries = filteredBeneficiaries.sort((a, b) => {
+        if (a.isNew && !b.isNew) {
+            return -1;
+        }
+        if (!a.isNew && b.isNew) {
+            return 1;
+        }
+        return 0;
+    });
 
     const handleToggleBeneficiaryStatus = async (beneficiary) => {
         try {
@@ -112,6 +135,13 @@ const ViewBeneficiaries = () => {
                                 onChange={handleSearch}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
                             />
+
+                            <button
+                                onClick={() => setIsNewBeneficiary(!isNewBeneficiary)}
+                                className="bg-gradient-to-b from-red-500 to-purple-500 text-white px-4 py-2 rounded-md mb-4"
+                            >
+                                {isNewBeneficiary ? "Show All" : "Show New"}
+                            </button>
                             {loading ? (
                                 <div className="text-center">
                                     <BeatLoader color="#3B82F6" loading={loading} size={10} />
@@ -120,46 +150,76 @@ const ViewBeneficiaries = () => {
                             ) : (
                                 <div className="overflow-x-auto">
                                     <table className="min-w-full bg-white border border-gray-200">
+
                                         <thead>
                                             <tr className="bg-gray-100 text-left text-gray-600">
-                                                <th className="py-2 px-4 border-b">Name</th>
-                                                <th className="py-2 px-4 border-b">Account Number</th>
-                                                <th className="py-2 px-4 border-b">Phone Number</th>
-                                                <th className="py-2 px-4 border-b">IFSC Code</th>
-                                                <th className="py-2 px-4 border-b">Type</th>
-                                                <th className="py-2 px-4 border-b">Status</th>
-                                                <th className="py-2 px-4 border-b">Actions</th>
+                                                <th scope="col" className="py-2 px-4 border-b">Name</th>
+                                                <th scope="col" className="py-2 px-4 border-b">Account Number</th>
+                                                <th scope="col" className="py-2 px-4 border-b">Phone Number</th>
+                                                <th scope="col" className="py-2 px-4 border-b">IFSC Code</th>
+                                                <th scope="col" className="py-2 px-4 border-b">Type</th>
+                                                <th scope="col" className="py-2 px-4 border-b">Status</th>
+                                                <th scope="col" className="py-2 px-4 border-b">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {filteredBeneficiaries.map((beneficiary) => (
+                                            {sortedBeneficiaries.map((beneficiary) => (
                                                 <tr key={beneficiary._id} className="hover:bg-gray-50">
-                                                    <td className="py-2 px-4 border-b">{beneficiary.name}</td>
+
+                                                    <td className="py-2 px-4 border-b flex items-center">
+                                                        {beneficiary.isNew && (
+                                                            <FaStar className="text-yellow-500 mr-2" />
+                                                        )}
+                                                        {beneficiary.name}
+                                                    </td>
                                                     <td className="py-2 px-4 border-b">{beneficiary.accountNumber}</td>
                                                     <td className="py-2 px-4 border-b">{beneficiary.phoneNumber}</td>
                                                     <td className="py-2 px-4 border-b">{beneficiary.ifscCode}</td>
                                                     <td className="py-2 px-4 border-b">{beneficiary.type}</td>
-                                                    <td className="py-2 px-4 border-b">{beneficiary.status} {beneficiary.status !== "Active" && <span className="text-gray-500 ml-3">Please Ask Admin To Activate It</span>}</td>
-                                                    <td className="py-2 px-4 border-b flex space-x-2">
-                                                        <button
-                                                            onClick={() => deleteBeneficiary(beneficiary)}
-                                                            className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
-                                                        >
-                                                            Delete
-                                                        </button>
-                                                        {userDesignation === "Director" && (
-                                                            <button
-                                                                onClick={() => handleToggleBeneficiaryStatus(beneficiary)}
-                                                                className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
-                                                            >
-                                                                Toggle Status
-                                                            </button>
+                                                    <td className="py-2 px-4 border-b">
+                                                        {beneficiary.status === "Active" ? (
+                                                            <FaCheckCircle className="text-green-500" />
+                                                        ) : (
+                                                            <FaTimesCircle className="text-red-500" />
                                                         )}
+                                                    </td>
+                                                    <td className="py-2 px-4 border-b">
+                                                        <div className="flex space-x-2">
+                                                            <button
+                                                                onClick={() => deleteBeneficiary(beneficiary)}
+                                                                className="flex items-center justify-center bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-300 ease-in-out"
+                                                            >
+                                                                <FaTrash className="mr-2" />
+                                                                Delete
+                                                            </button>
+                                                            {userDesignation === "Director" && (
+                                                                <button
+                                                                    onClick={() => handleToggleBeneficiaryStatus(beneficiary)}
+                                                                    className={`flex items-center justify-center text-white px-4 py-2 rounded-md transition duration-300 ease-in-out ${beneficiary.status === "Active"
+                                                                        ? "bg-yellow-500 hover:bg-yellow-600"
+                                                                        : "bg-green-500 hover:bg-green-600"
+                                                                        }`}
+                                                                >
+                                                                    {beneficiary.status === "Active" ? (
+                                                                        <>
+                                                                            <FaPause className="mr-2" />
+                                                                            Deactivate
+                                                                        </>
+                                                                    ) : (
+                                                                        <>
+                                                                            <FaPlay className="mr-2" />
+                                                                            Activate
+                                                                        </>
+                                                                    )}
+                                                                </button>
+                                                            )}
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             ))}
                                         </tbody>
                                     </table>
+
                                 </div>
                             )}
                             {showAlert && (

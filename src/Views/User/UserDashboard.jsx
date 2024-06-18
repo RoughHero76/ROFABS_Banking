@@ -4,12 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { FaHandHoldingHeart, FaMoneyCheckAlt } from 'react-icons/fa';
 import Header from '../../components/Header';
 import Sidebar from '../../components/Sidebar';
-import PaymentRequestsContainer from '../Shared/PaymentRequestsContainer';
 import { BeatLoader } from "react-spinners";
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { API_URL } from '../../../secrets';
 import { motion } from 'framer-motion';
+import PendingPaymentRequestsContainer from './Parts/PendingPaymentRequestsContainer';
+
 const UserDashboard = () => {
   const navigate = useNavigate();
   const [designation, setDesignation] = useState('');
@@ -25,6 +26,7 @@ const UserDashboard = () => {
       navigate('/login');
     } else {
       setToken(storedToken);
+      console.log(storedToken);
     }
   }, [navigate]);
 
@@ -55,8 +57,8 @@ const UserDashboard = () => {
     navigate('/makePaymentRequests');
   };
 
-  const handlePendingPaymentRequests = () => {
-    navigate('/pendingPaymentRequests');
+  const UserPaymentRequestHistory = () => {
+    navigate('/paymentRequestHistory');
   };
 
   if (!designation) {
@@ -124,17 +126,15 @@ const UserDashboard = () => {
 
               {!isEmployee && (
                 <div
-                  onClick={handlePendingPaymentRequests}
+                  onClick={UserPaymentRequestHistory}
                   className="bg-gradient-to-r from-red-700 to-red-600 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
                 >
                   <div className="flex items-center justify-between p-6">
                     <div className="flex items-center">
                       <FaMoneyCheckAlt className="mr-4 text-white text-2xl" />
-                      <span className="text-white font-bold text-lg">Pending Payment</span>
+                      <span className="text-white font-bold text-lg">Payment History</span>
                     </div>
-                    <div className="bg-white text-red-600 rounded-full w-10 h-10 flex items-center justify-center font-bold">
-                      {countOfPendingRequests}
-                    </div>
+
                   </div>
                   <div className="p-6">
                     <p className="text-white">View and manage pending payment requests.</p>
@@ -145,9 +145,21 @@ const UserDashboard = () => {
 
             {!isEmployee && (
               <div className="mt-8">
-                <PaymentRequestsContainer />
+
+                {/*  <PaymentRequestsContainer /> */}
+                <PendingPaymentRequestsContainer 
+                countOfPendingRequests={countOfPendingRequests}
+                
+                /> 
               </div>
             )}
+
+            {/* <div className="grid grid-cols-1 gap-6">
+              <div className="grid grid-cols-2 gap-6">
+                <PendingPaymentRequestsContainer />
+              </div>
+
+            </div> */}
           </motion.div>
         </main>
       </div>

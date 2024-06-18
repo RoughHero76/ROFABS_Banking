@@ -7,6 +7,7 @@ import { API_URL } from '../../../secrets';
 import Header from '../../components/Header';
 import Sidebar from '../../components/Sidebar';
 import { motion } from 'framer-motion';
+import PendingPaymentRequestsContainer from './Parts/PendingPaymentRequestsContainer';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ const AdminDashboard = () => {
     } else {
       setToken(storedToken);
       fetchCounts(storedToken);
+      console.log(storedToken);
     }
   }, [navigate]);
 
@@ -56,8 +58,8 @@ const AdminDashboard = () => {
     navigate('/beneficiariesManagement');
   };
 
-  const handlePaymentRequests = () => {
-    navigate('/paymentRequests');
+  const handlePaymentHistory = () => {
+    navigate('/paymentHistory');
   };
 
   return (
@@ -92,9 +94,6 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-
-
-
               <div
                 onClick={handleBeneficiaryManagement}
                 className="bg-gradient-to-r from-teal-700 to-teal-600 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
@@ -114,13 +113,13 @@ const AdminDashboard = () => {
               </div>
 
               <div
-                onClick={handlePaymentRequests}
+                onClick={handlePaymentHistory}
                 className="bg-gradient-to-r from-amber-700 to-amber-600 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
               >
                 <div className="flex items-center justify-between p-6">
                   <div className="flex items-center">
                     <FaMoneyCheckAlt className="mr-4 text-white text-2xl" />
-                    <span className="text-white font-bold text-lg">Payment Requests</span>
+                    <span className="text-white font-bold text-lg">Payment History</span>
                   </div>
                   <div className="bg-white text-amber-600 rounded-full w-10 h-10 flex items-center justify-center font-bold">
                     {paymentRequestsCount}
@@ -130,6 +129,13 @@ const AdminDashboard = () => {
                   <p className="text-white">View and process payment requests for beneficiaries.</p>
                 </div>
               </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-6">
+              <div className="grid grid-cols-2 gap-6">
+                <PendingPaymentRequestsContainer />
+              </div>
+
             </div>
           </motion.div>
         </main>

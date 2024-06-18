@@ -8,8 +8,8 @@ import Dashboard from './components/Dashboard';
 import UserManagement from './Views/Admin/Parts/UserManagement';
 import BeneficiariesManagement from './Views/Shared/BeneficiariesManagement';
 import MakePaymentRequests from './Views/Shared/MakePaymentRequests';
-import PaymentRequests from './Views/Admin/Parts/PaymentRequests';
-import PendingPaymentRequests from './Views/Shared/PendingPaymentRequests';
+import PaymentHistory from './Views/Admin/Parts/PaymentHistory';
+import UserPaymentRequestHistory from './Views/Shared/UserPaymentRequestHistory';
 import Profile from './Views/Shared/Profile';
 
 //BeneficiariesManagement
@@ -26,8 +26,8 @@ const App = () => {
         <Route path="/userManagement" element={<UserManagement />} />
         <Route path="/beneficiariesManagement" element={<BeneficiariesManagement />} />
         <Route path="/makePaymentRequests" element={<MakePaymentRequests />} />
-        <Route path="/paymentRequests" element={<PaymentRequests />} />
-        <Route path="/pendingPaymentRequests" element={<PendingPaymentRequests />} />
+        <Route path="/paymentHistory" element={<PaymentHistory />} />
+        <Route path="/paymentRequestHistory" element={<UserPaymentRequestHistory />} />
         <Route path="/profile" element={<Profile />} />
 
         <Route path="/addBeneficiary" element={<AddBeneficiary />} />

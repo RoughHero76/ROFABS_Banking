@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SBILogo from "../utils/image/sbi.jpg";
 import YonoSBILogo from "../utils/image/SBI_YONO_Logo.svg";
@@ -19,6 +19,12 @@ function Login() {
   const [sendOtpLoading, setSendOtpLoading] = useState(false);
   const [verifyOtpLoading, setVerifyOtpLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
 
 
   const sendOTP = async () => {
@@ -142,6 +148,7 @@ function Login() {
                     value={otp}
                     onChange={(e) => setOTP(e.target.value)}
                     className="outline-none mb-5 w-full lg:w-[45vw] border-b-2 font-display focus:outline-none focus:border-primarycolor transition-all duration-500 capitalize text-3xl"
+                    inputMode="numeric"
                   />
 
                   <button
