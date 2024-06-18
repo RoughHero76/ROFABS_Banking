@@ -9,7 +9,7 @@ import { BeatLoader } from "react-spinners";
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { API_URL } from '../../../secrets';
-
+import { motion } from 'framer-motion';
 const UserDashboard = () => {
   const navigate = useNavigate();
   const [designation, setDesignation] = useState('');
@@ -83,47 +83,72 @@ const UserDashboard = () => {
       <div className="flex-1 flex flex-col">
         <Header />
         <main className="p-6 flex-1">
-          <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-            <button
-              onClick={handleBeneficiaryManagement}
-              className="bg-teal-500 text-white font-bold py-4 px-6 rounded-lg flex items-center justify-center shadow-lg transform transition-transform hover:scale-105 hover:shadow-xl"
-            >
-              <FaHandHoldingHeart className="mr-2" />
-              Beneficiary Management
-            </button>
-
-            {!isEmployee && (
-              <button
-                onClick={handleMakePaymentRequest}
-                className="bg-amber-500 text-white font-bold py-4 px-6 rounded-lg flex items-center justify-center shadow-lg transform transition-transform hover:scale-105 hover:shadow-xl"
+          <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: 'easeInOut' }}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div
+                onClick={handleBeneficiaryManagement}
+                className="bg-gradient-to-r from-teal-700 to-teal-600 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
               >
-                <FaMoneyCheckAlt className="mr-2" />
-                Make Payment Requests
-              </button>
-            )}
+                <div className="flex items-center justify-between p-6">
+                  <div className="flex items-center">
+                    <FaHandHoldingHeart className="mr-4 text-white text-2xl" />
+                    <span className="text-white font-bold text-lg">Beneficiary Management</span>
+                  </div>
+                </div>
+                <div className="p-6">
+                  <p className="text-white">Manage beneficiaries, view their details, and track their progress.</p>
+                </div>
+              </div>
 
-            {!isEmployee && (
-              <button
-                onClick={handlePendingPaymentRequests}
-                className="bg-red-500 text-white font-bold py-4 px-6 rounded-lg flex items-center justify-center shadow-lg transform transition-transform hover:scale-105 hover:shadow-xl"
-              >
-                <FaMoneyCheckAlt className="mr-2" />
-                <span>Pending Payment Requests</span>
-                {countOfPendingRequests > 0 && (
-                  <span className="ml-2 bg-white text-black rounded-full w-6 h-6 flex items-center justify-center text-xs">
-                    {countOfPendingRequests}
-                  </span>
-                )}
-              </button>
-            )}
-          </div>
+              {!isEmployee && (
+                <div
+                  onClick={handleMakePaymentRequest}
+                  className="bg-gradient-to-r from-amber-700 to-amber-600 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+                >
+                  <div className="flex items-center justify-between p-6">
+                    <div className="flex items-center">
+                      <FaMoneyCheckAlt className="mr-4 text-white text-2xl" />
+                      <span className="text-white font-bold text-lg">Make Payment</span>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <p className="text-white">Submit payment requests for beneficiaries.</p>
+                  </div>
+                </div>
+              )}
 
-          {!isEmployee && (
-            <div className="mt-8">
-              <PaymentRequestsContainer />
+              {!isEmployee && (
+                <div
+                  onClick={handlePendingPaymentRequests}
+                  className="bg-gradient-to-r from-red-700 to-red-600 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+                >
+                  <div className="flex items-center justify-between p-6">
+                    <div className="flex items-center">
+                      <FaMoneyCheckAlt className="mr-4 text-white text-2xl" />
+                      <span className="text-white font-bold text-lg">Pending Payment</span>
+                    </div>
+                    <div className="bg-white text-red-600 rounded-full w-10 h-10 flex items-center justify-center font-bold">
+                      {countOfPendingRequests}
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <p className="text-white">View and manage pending payment requests.</p>
+                  </div>
+                </div>
+              )}
             </div>
-          )}
+
+            {!isEmployee && (
+              <div className="mt-8">
+                <PaymentRequestsContainer />
+              </div>
+            )}
+          </motion.div>
         </main>
       </div>
     </div>

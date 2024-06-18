@@ -100,9 +100,9 @@ const MakePaymentRequests = () => {
             <Sidebar />
             <div className="flex-1 flex flex-col">
                 <Header />
-                <main className="p-6 flex-1">
-                    <div className="container mx-auto px-4 py-8">
-                        <h2 className="text-2xl font-bold mb-4">Make Payment Request</h2>
+                <main className="p-2 flex-1">
+                    <div className="container mx-auto px-4 py-2">
+                        <h2 className="text-2xl font-bold mb-4">Make Payment</h2>
                         <div className="bg-white shadow-md rounded-lg p-6">
                             <div className="mb-4">
                                 <label htmlFor="paymentMadeFor" className="block mb-2 font-bold">

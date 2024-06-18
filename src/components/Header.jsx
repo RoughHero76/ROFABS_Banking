@@ -1,7 +1,7 @@
 // src/components/Header.js
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaUser, FaSignOutAlt, FaHome } from 'react-icons/fa';
+import { FaUser, FaSignOutAlt, FaHome, FaArrowLeft } from 'react-icons/fa';
 import Alert from './Alert';
 
 const Header = () => {
@@ -45,6 +45,10 @@ const Header = () => {
               <FaHome className="mr-2  hover:scale-105" />
               {/*   Rofabs Banking */}
             </button>
+
+            <div onClick={() => navigate(-1)} className="bg-reddish-purple rounded-full w-7 h-7 flex items-center justify-center font-bold mr-2 cursor-pointer  hover:scale-105">
+              <FaArrowLeft />
+            </div>
             <h1 className="text-lg font-bold">Welcome, {name}</h1>
           </div>
           <nav>

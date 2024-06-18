@@ -12,6 +12,10 @@ import PaymentRequests from './Views/Admin/Parts/PaymentRequests';
 import PendingPaymentRequests from './Views/Shared/PendingPaymentRequests';
 import Profile from './Views/Shared/Profile';
 
+//BeneficiariesManagement
+import AddBeneficiary from './Views/Shared/Beneficiaries/AddBeneficiary';
+import ViewBeneficiaries from './Views/Shared/Beneficiaries/ViewBeneficiaries';
+
 const App = () => {
   return (
     <>
@@ -25,6 +29,9 @@ const App = () => {
         <Route path="/paymentRequests" element={<PaymentRequests />} />
         <Route path="/pendingPaymentRequests" element={<PendingPaymentRequests />} />
         <Route path="/profile" element={<Profile />} />
+
+        <Route path="/addBeneficiary" element={<AddBeneficiary />} />
+        <Route path="/viewBeneficiaries" element={<ViewBeneficiaries />} />
       </Routes>
       <ToastContainer />
     </>
