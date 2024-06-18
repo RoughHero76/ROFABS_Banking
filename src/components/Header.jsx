@@ -37,37 +37,46 @@ const Header = () => {
     <>
       <header className="bg-gradient-to-r from-reddish-purple to-deep-purple py-4 px-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between text-white">
-          <div className="flex flex-col md:flex-row md:items-center mb-4 md:mb-0">
+          <div className="flex items-center mb-4 md:mb-0">
             <button
               onClick={goToHomePage}
-              className="mr-4 flex items-center hover:text-gray-200 text-lg font-bold mb-2 md:mb-0"
+              className="mr-4 flex items-center hover:text-gray-200 text-lg font-bold"
             >
-              <FaHome className="mr-2  hover:scale-105" />
-              {/*   Rofabs Banking */}
+              <FaHome className="mr-2 hover:scale-105" />
+              {/* Rofabs Banking */}
             </button>
 
-            <div onClick={() => navigate(-1)} className="bg-reddish-purple rounded-full w-7 h-7 flex items-center justify-center font-bold mr-2 cursor-pointer  hover:scale-105">
+            <div
+              onClick={() => navigate(-1)}
+              className="bg-reddish-purple rounded-full w-7 h-7 flex items-center justify-center font-bold mr-2 cursor-pointer hover:scale-105"
+            >
               <FaArrowLeft />
             </div>
-            <h1 className="text-lg font-bold">Welcome, {name}</h1>
+            <h1 className="text-lg font-bold text-white">Welcome, {name}</h1>
           </div>
+
           <nav>
-            <ul className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+            <ul className="flex justify-center space-x-4">
               <li>
-                <div onClick={() => navigate('/profile')} className="flex items-center hover:text-gray-200 cursor-pointer  hover:scale-105">
+                <div
+                  onClick={() => navigate('/profile')}
+                  className="flex items-center hover:text-gray-200 cursor-pointer hover:scale-105"
+                >
                   <FaUser className="mr-2" />
                   Profile
                 </div>
               </li>
               <li>
-                <div onClick={handleLogout} className="flex items-center hover:text-gray-200 cursor-pointer hover:scale-105">
+                <div
+                  onClick={handleLogout}
+                  className="flex items-center hover:text-gray-200 cursor-pointer hover:scale-105"
+                >
                   <FaSignOutAlt className="mr-2" />
                   Logout
                 </div>
               </li>
             </ul>
           </nav>
-
         </div>
       </header>
       {showAlert && (

@@ -11,19 +11,13 @@ import { motion } from 'framer-motion';
 import { debounce } from 'lodash';
 import { FaEdit, FaTrash, FaUserCheck, FaUserTimes } from 'react-icons/fa';
 
-//
-// REMOVE THE PAGINATION IN THE FUTURE
-// OR ADD PRORPER LOGIC FOR IT
-//
-
 const UserManagement = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [users, setUsers] = useState([]);
     const [showAlert, setShowAlert] = useState(false);
     const [userToDelete, setUserToDelete] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
-    const [formData, setFormData] = useState({
-        name: '',
+    const [formData, setFormData] = useState({        name: '',
         email: '',
         phoneNumber: '',
         password: '',
@@ -36,14 +30,15 @@ const UserManagement = () => {
         fetchUsers();
     }, []);
 
-    const handleSearch = debounce((e) => {
+    const handleSearch = (e) => {
         setSearchQuery(e.target.value);
-    }, 300);
+    };
 
     const filteredUsers = users.filter((user) => {
-        const { name, phoneNumber, designation } = user;
+        const { uid, name, phoneNumber, designation } = user;
         const query = searchQuery.toLowerCase();
         return (
+            uid.toLowerCase().includes(query) ||
             name.toLowerCase().includes(query) ||
             phoneNumber.toLowerCase().includes(query) ||
             designation.toLowerCase().includes(query)
@@ -340,12 +335,12 @@ const UserManagement = () => {
                                     </div>
                                     <input
                                         type="text"
-                                        placeholder="Search by name, phone number, or designation"
+                                        placeholder="Search by uid, name, phone number, or designation"
                                         value={searchQuery}
                                         onChange={handleSearch}
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
                                     />
-                                    {loading ? (
+                                                                       {loading ? (
                                         <div className="text-center">
                                             <BeatLoader color="#3B82F6" loading={loading} size={10} />
                                             <span className="text-gray-500">Loading users...</span>
@@ -364,6 +359,7 @@ const UserManagement = () => {
                                                             <div className="text-gray-500">{user.phoneNumber}</div>
                                                             <div className="text-gray-500">{user.designation}</div>
                                                             <div className="text-gray-500">{user.status}</div>
+                                                            <div className="text-gray-500">UID: {user.uid}</div>
                                                         </div>
                                                         <div className="flex space-x-2">
                                                             <button

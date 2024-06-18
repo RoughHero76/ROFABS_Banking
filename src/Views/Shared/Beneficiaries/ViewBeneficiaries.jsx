@@ -8,7 +8,7 @@ import Alert from "../../../components/Alert";
 import { motion } from 'framer-motion';
 import Sidebar from "../../../components/Sidebar";
 import Header from "../../../components/Header";
-import { FaStar, FaCheckCircle, FaTimesCircle, FaTrash, FaPause, FaPlay } from "react-icons/fa";
+import { FaStar, FaCheckCircle, FaTimesCircle, FaTrash, FaPause, FaPlay, FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 const ViewBeneficiaries = () => {
     const userDesignation = localStorage.getItem("designation");
@@ -18,8 +18,10 @@ const ViewBeneficiaries = () => {
     const [showAlert, setShowAlert] = useState(false);
     const [beneficiaryToDelete, setBeneficiaryToDelete] = useState(null);
     const [loading, setLoading] = useState(true);
-
     const [isNewBeneficiary, setIsNewBeneficiary] = useState(false);
+    const [expandedBeneficiaries, setExpandedBeneficiaries] = useState([]);
+    const [sortColumn, setSortColumn] = useState(null);
+    const [sortOrder, setSortOrder] = useState("asc");
 
     useEffect(() => {
         fetchBeneficiaries();
@@ -66,14 +68,23 @@ const ViewBeneficiaries = () => {
     };
 
     const sortedBeneficiaries = filteredBeneficiaries.sort((a, b) => {
-        if (a.isNew && !b.isNew) {
-            return -1;
-        }
-        if (!a.isNew && b.isNew) {
-            return 1;
+        if (sortColumn) {
+            const columnA = a[sortColumn];
+            const columnB = b[sortColumn];
+            if (columnA < columnB) return sortOrder === "asc" ? -1 : 1;
+            if (columnA > columnB) return sortOrder === "asc" ? 1 : -1;
         }
         return 0;
     });
+
+    const handleSort = (column) => {
+        if (sortColumn === column) {
+            setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+        } else {
+            setSortColumn(column);
+            setSortOrder("asc");
+        }
+    };
 
     const handleToggleBeneficiaryStatus = async (beneficiary) => {
         try {
@@ -115,6 +126,14 @@ const ViewBeneficiaries = () => {
         }
     };
 
+    const toggleBeneficiaryExpansion = (beneficiaryId) => {
+        if (expandedBeneficiaries.includes(beneficiaryId)) {
+            setExpandedBeneficiaries(expandedBeneficiaries.filter((id) => id !== beneficiaryId));
+        } else {
+            setExpandedBeneficiaries([...expandedBeneficiaries, beneficiaryId]);
+        }
+    };
+
     return (
         <div className="flex min-h-screen bg-gray-100">
             <Sidebar />
@@ -138,88 +157,124 @@ const ViewBeneficiaries = () => {
 
                             <button
                                 onClick={() => setIsNewBeneficiary(!isNewBeneficiary)}
-                                className="bg-gradient-to-b from-red-500 to-purple-500 text-white px-4 py-2 rounded-md mb-4"
+                                className="bg-gradient-to-b from-red-500 to-purple-500 text-white px-4 py-2 rounded-md mb-4 w-full sm:w-auto"
                             >
                                 {isNewBeneficiary ? "Show All" : "Show New"}
                             </button>
+
                             {loading ? (
                                 <div className="text-center">
                                     <BeatLoader color="#3B82F6" loading={loading} size={10} />
                                     <span className="text-gray-500">Loading beneficiaries...</span>
                                 </div>
+                            ) : sortedBeneficiaries.length === 0 ? (
+                                <div className="text-center text-gray-500 py-4">No beneficiaries found.</div>
                             ) : (
                                 <div className="overflow-x-auto">
                                     <table className="min-w-full bg-white border border-gray-200">
-
                                         <thead>
                                             <tr className="bg-gray-100 text-left text-gray-600">
-                                                <th scope="col" className="py-2 px-4 border-b">Name</th>
-                                                <th scope="col" className="py-2 px-4 border-b">Account Number</th>
-                                                <th scope="col" className="py-2 px-4 border-b">Phone Number</th>
-                                                <th scope="col" className="py-2 px-4 border-b">IFSC Code</th>
-                                                <th scope="col" className="py-2 px-4 border-b">Type</th>
-                                                <th scope="col" className="py-2 px-4 border-b">Status</th>
-                                                <th scope="col" className="py-2 px-4 border-b">Actions</th>
+                                                <th scope="col" className="px-6 py-3 cursor-pointer" onClick={() => handleSort("name")}>
+                                                    Name {sortColumn === "name" && (sortOrder === "asc" ? "▲" : "▼")}
+                                                </th>
+                                                <th scope="col" className="px-6 py-3 cursor-pointer" onClick={() => handleSort("accountNumber")}>
+                                                    Account Number {sortColumn === "accountNumber" && (sortOrder === "asc" ? "▲" : "▼")}
+                                                </th>
+                                                <th scope="col" className="px-6 py-3 cursor-pointer" onClick={() => handleSort("phoneNumber")}>
+                                                    Phone Number {sortColumn === "phoneNumber" && (sortOrder === "asc" ? "▲" : "▼")}
+                                                </th>
+                                                <th scope="col" className="px-6 py-3 cursor-pointer" onClick={() => handleSort("type")}>
+                                                    Type {sortColumn === "type" && (sortOrder === "asc" ? "▲" : "▼")}
+                                                </th>
+                                                <th scope="col" className="px-6 py-3 cursor-pointer" onClick={() => handleSort("status")}>
+                                                    Status {sortColumn === "status" && (sortOrder === "asc" ? "▲" : "▼")}
+                                                </th>
+                                                <th scope="col" className="px-6 py-3">Actions</th>
+                                                <th scope="col" className="px-6 py-3"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {sortedBeneficiaries.map((beneficiary) => (
-                                                <tr key={beneficiary._id} className="hover:bg-gray-50">
-
-                                                    <td className="py-2 px-4 border-b flex items-center">
-                                                        {beneficiary.isNew && (
-                                                            <FaStar className="text-yellow-500 mr-2" />
-                                                        )}
-                                                        {beneficiary.name}
-                                                    </td>
-                                                    <td className="py-2 px-4 border-b">{beneficiary.accountNumber}</td>
-                                                    <td className="py-2 px-4 border-b">{beneficiary.phoneNumber}</td>
-                                                    <td className="py-2 px-4 border-b">{beneficiary.ifscCode}</td>
-                                                    <td className="py-2 px-4 border-b">{beneficiary.type}</td>
-                                                    <td className="py-2 px-4 border-b">
-                                                        {beneficiary.status === "Active" ? (
-                                                            <FaCheckCircle className="text-green-500" />
-                                                        ) : (
-                                                            <FaTimesCircle className="text-red-500" />
-                                                        )}
-                                                    </td>
-                                                    <td className="py-2 px-4 border-b">
-                                                        <div className="flex space-x-2">
-                                                            <button
-                                                                onClick={() => deleteBeneficiary(beneficiary)}
-                                                                className="flex items-center justify-center bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-300 ease-in-out"
-                                                            >
-                                                                <FaTrash className="mr-2" />
-                                                                Delete
-                                                            </button>
-                                                            {userDesignation === "Director" && (
-                                                                <button
-                                                                    onClick={() => handleToggleBeneficiaryStatus(beneficiary)}
-                                                                    className={`flex items-center justify-center text-white px-4 py-2 rounded-md transition duration-300 ease-in-out ${beneficiary.status === "Active"
-                                                                        ? "bg-yellow-500 hover:bg-yellow-600"
-                                                                        : "bg-green-500 hover:bg-green-600"
-                                                                        }`}
-                                                                >
-                                                                    {beneficiary.status === "Active" ? (
-                                                                        <>
-                                                                            <FaPause className="mr-2" />
-                                                                            Deactivate
-                                                                        </>
-                                                                    ) : (
-                                                                        <>
-                                                                            <FaPlay className="mr-2" />
-                                                                            Activate
-                                                                        </>
-                                                                    )}
-                                                                </button>
+                                                <React.Fragment key={beneficiary._id}>
+                                                    <tr className="hover:bg-gray-50">
+                                                        <td className="px-6 py-4 whitespace-nowrap">
+                                                            <div className="flex items-center">
+                                                                {beneficiary.isNew && (
+                                                                    <FaStar className="text-yellow-500 mr-2" />
+                                                                )}
+                                                                {beneficiary.name}
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap">{beneficiary.accountNumber}</td>
+                                                        <td className="px-6 py-4 whitespace-nowrap">{beneficiary.phoneNumber}</td>
+                                                        <td className="px-6 py-4 whitespace-nowrap">{beneficiary.type}</td>
+                                                        <td className="px-6 py-4 whitespace-nowrap">
+                                                            {beneficiary.status === "Active" ? (
+                                                                <FaCheckCircle className="text-green-500" />
+                                                            ) : (
+                                                                <FaTimesCircle className="text-red-500" />
                                                             )}
-                                                        </div>
-                                                    </td>
-                                                </tr>
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap">
+                                                            <div className="flex flex-col space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0">
+                                                                <button
+                                                                    onClick={() => deleteBeneficiary(beneficiary)}
+                                                                    className="flex items-center justify-center bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-300 ease-in-out w-full sm:w-auto"
+                                                                >
+                                                                    <FaTrash className="mr-2" />
+                                                                    Delete
+                                                                </button>
+                                                                {userDesignation === "Director" && (
+                                                                    <button
+                                                                        onClick={() => handleToggleBeneficiaryStatus(beneficiary)}
+                                                                        className={`flex items-center justify-center text-white px-4 py-2 rounded-md transition duration-300 ease-in-out w-full sm:w-auto ${beneficiary.status === "Active"
+                                                                                ? "bg-yellow-500 hover:bg-yellow-600"
+                                                                                : "bg-green-500 hover:bg-green-600"
+                                                                            }`}
+                                                                    >
+                                                                        {beneficiary.status === "Active" ? (
+                                                                            <>
+                                                                                <FaPause className="mr-2" />
+                                                                                Deactivate
+                                                                            </>
+                                                                        ) : (
+                                                                            <>
+                                                                                <FaPlay className="mr-2" />
+                                                                                Activate
+                                                                            </>
+                                                                        )}
+                                                                    </button>
+                                                                )}
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                            <button
+                                                                onClick={() => toggleBeneficiaryExpansion(beneficiary._id)}
+                                                                className="text-blue-600 hover:text-blue-900"
+                                                            >
+                                                                {expandedBeneficiaries.includes(beneficiary._id) ? <FaChevronUp /> : <FaChevronDown />}
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    {expandedBeneficiaries.includes(beneficiary._id) && (
+                                                        <tr>
+                                                            <td colSpan="7" className="px-6 py-4">
+                                                                <div className="grid grid-cols-2 gap-4">
+                                                                    <div>
+                                                                        <p><strong>IFSC Code:</strong> {beneficiary.ifscCode}</p>
+                                                                        <p><strong>Branch:</strong> {beneficiary.branch}</p>
+                                                                        <p><strong>Phone Number:</strong> {beneficiary.phoneNumber}</p>
+                                                                        <p><strong>Created At:</strong> {beneficiary.createdAt}</p>
+                                                                        <p><strong>Updated At:</strong> {beneficiary.updatedAt}</p>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    )}
+                                                </React.Fragment>
                                             ))}
                                         </tbody>
                                     </table>
-
                                 </div>
                             )}
                             {showAlert && (

@@ -85,7 +85,7 @@ const UserDashboard = () => {
       <div className="flex-1 flex flex-col">
         <Header />
         <main className="p-6 flex-1">
-          <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+        
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
