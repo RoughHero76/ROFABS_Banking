@@ -29,7 +29,6 @@ const App = () => {
         <Route path="/paymentHistory" element={<PaymentHistory />} />
         <Route path="/paymentRequestHistory" element={<UserPaymentRequestHistory />} />
         <Route path="/profile" element={<Profile />} />
-
         <Route path="/addBeneficiary" element={<AddBeneficiary />} />
         <Route path="/viewBeneficiaries" element={<ViewBeneficiaries />} />
       </Routes>

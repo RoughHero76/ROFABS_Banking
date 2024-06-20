@@ -23,8 +23,12 @@ const MakePaymentRequests = () => {
     const [loading, setLoading] = useState(true);
     const [formLoading, setFormLoading] = useState(false);
 
+    //Payment Methods
+    const [paymentMethods, setPaymentMethods] = useState([]);
+
     useEffect(() => {
         fetchBeneficiaries();
+        fetchPaymentMethods();
     }, []);
 
     const fetchBeneficiaries = async () => {
@@ -39,7 +43,20 @@ const MakePaymentRequests = () => {
         } catch (error) {
             console.error("Error fetching beneficiaries:", error);
             setLoading(false);
-            toast.error(error.response?.data?.message || "An error occurred");
+            toast.error(error.response?.data?.message || "Error, Couldn't Fetch Beneficiaries");
+        }
+    };
+
+    const fetchPaymentMethods = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.get(`${API_URL}/api/v1/shared/paymentMethods`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            setPaymentMethods(response.data.paymentMethods);
+        } catch (error) {
+            console.error("Error fetching payment methods:", error);
+            toast.error(error.response?.data?.message || "Error, Couldn't Fetch Payment Methods");
         }
     };
 
@@ -159,10 +176,11 @@ const MakePaymentRequests = () => {
                                     <option value="" disabled>
                                         Select Payment Method
                                     </option>
-                                    <option value="UPI">UPI</option>
-                                    <option value="NEFT">NEFT</option>
-                                    <option value="IMPS">IMPS</option>
-                                    <option value="RTGS">RTGS</option>
+                                    {paymentMethods.map((method) => (
+                                        <option key={method} value={method}>
+                                            {method}
+                                        </option>
+                                    ))}
                                 </select>
                             </div>
 
