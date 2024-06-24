@@ -26,7 +26,7 @@ const UserDashboard = () => {
       navigate('/login');
     } else {
       setToken(storedToken);
-      console.log(storedToken);
+      //console.log(storedToken);
     }
   }, [navigate]);
 
