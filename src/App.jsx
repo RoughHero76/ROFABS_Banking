@@ -16,6 +16,8 @@ import Profile from './Views/Shared/Profile';
 import AddBeneficiary from './Views/Shared/Beneficiaries/AddBeneficiary';
 import ViewBeneficiaries from './Views/Shared/Beneficiaries/ViewBeneficiaries';
 
+import AddPaymentHistory from './Views/Admin/Parts/AddPaymentHistory';
+
 const App = () => {
   return (
     <>
@@ -31,6 +33,7 @@ const App = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/addBeneficiary" element={<AddBeneficiary />} />
         <Route path="/viewBeneficiaries" element={<ViewBeneficiaries />} />
+        <Route path="/addPaymentHistory" element={<AddPaymentHistory />} />
       </Routes>
       <ToastContainer />
     </>

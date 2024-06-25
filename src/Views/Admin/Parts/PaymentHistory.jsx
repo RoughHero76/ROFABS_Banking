@@ -9,8 +9,13 @@ import Header from "../../../components/Header";
 import Sidebar from "../../../components/Sidebar";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { useNavigate } from "react-router-dom";
+import { FaHandHoldingHeart, FaMoneyCheckAlt } from 'react-icons/fa';
 
 const PaymentHistory = () => {
+
+    const navigate = useNavigate();
+
     const [paymentHistory, setPaymentHistory] = useState([]);
     const [filteredPaymentHistory, setFilteredPaymentHistory] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -167,6 +172,10 @@ const PaymentHistory = () => {
         }
     };
 
+    const handleaddPaymentHistory = () => {
+        navigate('/addPaymentHistory');
+    }
+
 
     return (
         <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
@@ -249,6 +258,19 @@ const PaymentHistory = () => {
                                 >
                                     {downloadLoading ? "Downloading..." : "Download"}
                                 </button>
+
+                                <div
+                                    onClick={handleaddPaymentHistory}
+                                    className="bg-gradient-to-r from-amber-700 to-amber-600 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+                                >
+                                    <div className="flex items-center justify-between p-2">
+                                        <div className="flex items-center">
+                                            <FaMoneyCheckAlt className="mr-4 text-white text-2xl" />
+                                            <span className="text-white font-bold text-lg">Add Payment</span>
+                                        </div>
+                                    </div>
+                                   
+                                </div>
                             </div>
                             {loading ? (
                                 <div className="text-center py-4">
@@ -263,7 +285,7 @@ const PaymentHistory = () => {
                                         <thead className="bg-gray-50">
                                             <tr>
                                                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" onClick={() => handleSort("_id")}>
-                                                    ID {sortColumn === "_id" && (sortOrder === "asc" ? "▲" : "▼")}
+                                                    Payment ID {sortColumn === "_id" && (sortOrder === "asc" ? "▲" : "▼")}
                                                 </th>
                                                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" onClick={() => handleSort("paymentMadeFor")}>
                                                     Payment Made For {sortColumn === "paymentMadeFor" && (sortOrder === "asc" ? "▲" : "▼")}
