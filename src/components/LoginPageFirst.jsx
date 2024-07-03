@@ -5,41 +5,52 @@ import YonoSBILogo from "../utils/image/SBI_YONO_Logo.svg";
 import RofabsLogo from "../utils/image/ROFABS.png";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import ReCAPTCHA from "react-google-recaptcha";
+import { API_URL } from "../../secrets";
+import axios from "axios";
 
 function LoginPageFirst() {
-  const [username, setUsername] = useState("");
+  const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [usernameError, setUsernameError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [captchaResponse, setCaptchaResponse] = useState("");
   const [captchaError, setCaptchaError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Reset error messages
-    setUsernameError("");
-    setPasswordError("");
+    setErrorMessage("");
     setCaptchaError("");
 
-    // Dummy username and password for validation
-    const dummyUsername = "admin";
-    const dummyPassword = "admin";
-
-    if (username.trim() === "") {
-      setUsernameError("Please enter a username.");
+    if (emailOrUsername.trim() === "") {
+      setErrorMessage("Please enter an email or username.");
     } else if (password.trim() === "") {
-      setPasswordError("Please enter a password.");
+      setErrorMessage("Please enter a password.");
     } else if (captchaResponse.trim() === "") {
       setCaptchaError("Please complete the captcha.");
-    } else if (username !== dummyUsername || password !== dummyPassword) {
-      setUsernameError("Invalid username or password.");
-      setPasswordError("Invalid username or password.");
     } else {
-      // Validation successful, navigate to the /login route
-      navigate("/login");
+      try {
+        const response = await axios.post(`${API_URL}/api/v1/auth/login`, {
+          emailOrUsername,
+          password,
+        });
+
+        console.log("Login response:", response.data);
+        if (response.data.message === "Login successful") {
+          localStorage.setItem("emailLogin", response.data.token);
+          navigate("/login");
+        } else {
+          setErrorMessage("Invalid email, username, or password.");
+        }
+      } catch (error) {
+        console.error("Login error:", error);
+        if (error.response && error.response.data && error.response.data.Error) {
+          setErrorMessage(error.response.data.Error);
+        } else {
+          setErrorMessage("An error occurred during login.");
+        }
+      }
     }
   };
 
@@ -78,7 +89,7 @@ function LoginPageFirst() {
         </div>
 
         {/* Right Side */}
-        <div className="h-[90vh] w-[90vw] sm:h-[95vh] p-6 flex flex-col items-center lg:items-center overflowhidden ">
+        <div className="h-[90vh] w-[90vw] sm:h-[95vh] p-6 flex flex-col items-center lg:items-center overflowhidden">
           <img
             className="w-[50%] lg:w-[18vw] mt-4 lg:mt-0"
             src={YonoSBILogo}
@@ -93,7 +104,7 @@ function LoginPageFirst() {
             </p>
           </div>
 
-          <div className="w-full flex flex-col mt-5 lg:mt-[15%] items-center  lg:items-center justify-center">
+          <div className="w-full flex flex-col mt-5 lg:mt-[15%] items-center lg:items-center justify-center">
             <form
               onSubmit={handleSubmit}
               className="flex flex-col w-full items-center lg:items-center justify-between"
@@ -101,14 +112,11 @@ function LoginPageFirst() {
               <div className="w-full relative mt-2 lg:mt-0 flex flex-col items-center justify-center">
                 <input
                   type="text"
-                  placeholder="Username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Email or Username"
+                  value={emailOrUsername}
+                  onChange={(e) => setEmailOrUsername(e.target.value)}
                   className="outline-none w-[80%] lg:w-[45vw] mb-5 border-b-2 font-display focus:outline-none focus:border-primarycolor transition-all duration-500 text-lg lg:text-3xl"
                 />
-                {usernameError && (
-                  <p className="text-red-500 mb-2">{usernameError}</p>
-                )}
                 <div className="relative w-[80%] lg:w-[45vw] mt-8 mb-5">
                   <input
                     type={showPassword ? "text" : "password"}
@@ -125,8 +133,8 @@ function LoginPageFirst() {
                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                   </button>
                 </div>
-                {passwordError && (
-                  <p className="text-red-500 mb-2">{passwordError}</p>
+                {errorMessage && (
+                  <p className="text-red-500 mb-2">{errorMessage}</p>
                 )}
                 <ReCAPTCHA
                   className="mt-2 mb-2"

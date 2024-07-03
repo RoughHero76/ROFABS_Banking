@@ -22,8 +22,13 @@ function Login() {
   const [otpSent, setOtpSent] = useState(false);
 
   useEffect(() => {
-    if (localStorage.getItem("token")) {
-      isTokenExpired(localStorage.getItem("token")) ? navigate("/login") : navigate("/dashboard");
+    const emailToken = localStorage.getItem("emailLogin");
+    const phoneToken = localStorage.getItem("token");
+
+    if (emailToken && phoneToken) {
+      navigate("/dashboard");
+    } else if (!emailToken) {
+      navigate("/");
     }
   }, [navigate]);
 

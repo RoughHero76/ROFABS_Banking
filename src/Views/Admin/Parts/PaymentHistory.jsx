@@ -11,6 +11,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate } from "react-router-dom";
 import { FaHandHoldingHeart, FaMoneyCheckAlt } from 'react-icons/fa';
+import BankDetailsModal from "./BankDetailsModal";
 
 const PaymentHistory = () => {
 
@@ -26,6 +27,10 @@ const PaymentHistory = () => {
     const [endDate, setEndDate] = useState(null);
     const [isStartDateOpen, setIsStartDateOpen] = useState(false);
     const [isEndDateOpen, setIsEndDateOpen] = useState(false);
+
+
+    const [isBankDetailsModalOpen, setIsBankDetailsModalOpen] = useState(false);
+
 
     const startDateRef = useRef(null);
     const endDateRef = useRef(null);
@@ -176,6 +181,10 @@ const PaymentHistory = () => {
         navigate('/addPaymentHistory');
     }
 
+    const handleTransactionHistory = () => {
+        navigate('/transactionHistory');
+    }
+
 
     return (
         <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
@@ -199,6 +208,25 @@ const PaymentHistory = () => {
                                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
                             </div>
+
+                            <div className="px-4 py-2 flex space-x-4 relative">
+
+                                <button
+                                    onClick={() => setIsBankDetailsModalOpen(true)}
+                                    className="px-4 py-2 bg-gradient-to-r from-reddish-purple to-deep-purple text-white rounded-md focus:outline-none hover:scale-105"
+                                >
+                                    Add Bank Details
+                                </button>
+
+                                <button
+                                    onClick={handleTransactionHistory}
+                                    className="px-4 py-2 bg-gradient-to-r from-reddish-purple to-deep-purple text-white rounded-md focus:outline-none hover:scale-105"
+                                >
+                                    Transaction History
+                                </button>
+                            </div>
+
+
                             <div className="px-4 py-2 flex space-x-4 relative">
                                 <div ref={startDateRef}>
                                     <button
@@ -266,11 +294,13 @@ const PaymentHistory = () => {
                                     <div className="flex items-center justify-between p-2">
                                         <div className="flex items-center">
                                             <FaMoneyCheckAlt className="mr-4 text-white text-2xl" />
-                                            <span className="text-white font-bold text-lg">Add Payment</span>
+                                            <span className="text-white">Add Payment</span>
                                         </div>
                                     </div>
-                                   
+
                                 </div>
+
+
                             </div>
                             {loading ? (
                                 <div className="text-center py-4">
@@ -284,21 +314,20 @@ const PaymentHistory = () => {
                                     <table className="min-w-full divide-y divide-gray-200">
                                         <thead className="bg-gray-50">
                                             <tr>
-                                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" onClick={() => handleSort("_id")}>
-                                                    Payment ID {sortColumn === "_id" && (sortOrder === "asc" ? "▲" : "▼")}
-                                                </th>
-                                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" onClick={() => handleSort("paymentMadeFor")}>
-                                                    Payment Made For {sortColumn === "paymentMadeFor" && (sortOrder === "asc" ? "▲" : "▼")}
+                                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" onClick={() => handleSort("accountHolderName")}>
+                                                    Account Holder Name {sortColumn === "accountHolderName" && (sortOrder === "asc" ? "▲" : "▼")}
                                                 </th>
                                                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" onClick={() => handleSort("paymentMethod")}>
                                                     Payment Method {sortColumn === "paymentMethod" && (sortOrder === "asc" ? "▲" : "▼")}
                                                 </th>
+                                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" onClick={() => handleSort("paymentMadeFor")}>
+                                                    Payment Made For {sortColumn === "paymentMadeFor" && (sortOrder === "asc" ? "▲" : "▼")}
+                                                </th>
+                                               
                                                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" onClick={() => handleSort("upiNumber")}>
-                                                    UPI Number {sortColumn === "upiNumber" && (sortOrder === "asc" ? "▲" : "▼")}
+                                                    Payment To {sortColumn === "upiNumber" && (sortOrder === "asc" ? "▲" : "▼")}
                                                 </th>
-                                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" onClick={() => handleSort("accountHolderName")}>
-                                                    Account Holder Name {sortColumn === "accountHolderName" && (sortOrder === "asc" ? "▲" : "▼")}
-                                                </th>
+
                                                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" onClick={() => handleSort("amount")}>
                                                     Amount {sortColumn === "amount" && (sortOrder === "asc" ? "▲" : "▼")}
                                                 </th>
@@ -310,11 +339,12 @@ const PaymentHistory = () => {
                                         <tbody className="bg-white divide-y divide-gray-200">
                                             {filteredPaymentHistory.map((payment) => (
                                                 <tr key={payment._id}>
-                                                    <td className="px-6 py-4 whitespace-nowrap">{payment._id}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">{payment.paymentMadeFor}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">{payment.paymentMethod}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">{payment.upiNumber}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap">{payment.accountHolderName}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">{payment.paymentMethod}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">{payment.paymentMadeFor}</td>
+                                                    
+                                                    <td className="px-6 py-4 whitespace-nowrap">{payment.upiNumber}</td>
+
                                                     <td className="px-6 py-4 whitespace-nowrap">{payment.amount}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${payment.status === 'Completed' ? 'bg-green-100 text-green-800' : payment.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
@@ -331,6 +361,10 @@ const PaymentHistory = () => {
                     </div>
                 </motion.div>
             </div>
+            <BankDetailsModal
+                isOpen={isBankDetailsModalOpen}
+                onClose={() => setIsBankDetailsModalOpen(false)}
+            />
         </div>
     );
 };

@@ -17,7 +17,9 @@ const UserManagement = () => {
     const [showAlert, setShowAlert] = useState(false);
     const [userToDelete, setUserToDelete] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
-    const [formData, setFormData] = useState({        name: '',
+    const [formData, setFormData] = useState({
+        name: '',
+        userName: '',
         email: '',
         phoneNumber: '',
         password: '',
@@ -70,6 +72,7 @@ const UserManagement = () => {
             });
             setFormData({
                 name: '',
+                userName: '',
                 email: '',
                 phoneNumber: '',
                 password: '',
@@ -97,6 +100,7 @@ const UserManagement = () => {
             setSelectedUser(null);
             setFormData({
                 name: '',
+                userName: '',
                 email: '',
                 phoneNumber: '',
                 password: '',
@@ -146,6 +150,7 @@ const UserManagement = () => {
         setSelectedUser(user);
         setFormData({
             name: user.name,
+            userName: user.userName,
             email: user.email,
             phoneNumber: user.phoneNumber,
             password: '',
@@ -157,6 +162,7 @@ const UserManagement = () => {
         setSelectedUser(null);
         setFormData({
             name: '',
+            userName: '',
             email: '',
             phoneNumber: '',
             password: '',
@@ -222,6 +228,20 @@ const UserManagement = () => {
                                             value={formData.email}
                                             onChange={handleInputChange}
                                             placeholder="Enter email"
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label htmlFor="userName" className="block text-gray-700 font-bold mb-2">
+                                            Username
+                                        </label>
+                                        <input
+                                            id="userName"
+                                            type="text"
+                                            name="userName"
+                                            value={formData.userName}
+                                            onChange={handleInputChange}
+                                            placeholder="Enter username"
                                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         />
                                     </div>
@@ -340,7 +360,7 @@ const UserManagement = () => {
                                         onChange={handleSearch}
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
                                     />
-                                                                       {loading ? (
+                                    {loading ? (
                                         <div className="text-center">
                                             <BeatLoader color="#3B82F6" loading={loading} size={10} />
                                             <span className="text-gray-500">Loading users...</span>
@@ -355,6 +375,7 @@ const UserManagement = () => {
                                                     >
                                                         <div>
                                                             <div className="font-bold">{user.name}</div>
+                                                            <div className="text-gray-500">{user.userName}</div>
                                                             <div className="text-gray-500">{user.email}</div>
                                                             <div className="text-gray-500">{user.phoneNumber}</div>
                                                             <div className="text-gray-500">{user.designation}</div>
@@ -379,8 +400,8 @@ const UserManagement = () => {
                                                             <button
                                                                 onClick={() => toggleUserStatus(user.uid)}
                                                                 className={`px-4 py-2 rounded-md text-white ${user.status === 'Active'
-                                                                        ? 'bg-red-500 hover:bg-red-600'
-                                                                        : 'bg-green-500 hover:bg-green-600'
+                                                                    ? 'bg-red-500 hover:bg-red-600'
+                                                                    : 'bg-green-500 hover:bg-green-600'
                                                                     }`}
                                                                 title={`${user.status === 'Active' ? 'Deactivate' : 'Activate'} User`}
                                                             >
@@ -397,7 +418,7 @@ const UserManagement = () => {
                                     )}
                                 </div>
                             </div>
-                           {/*  <div className="mt-8">
+                            {/*  <div className="mt-8">
                                 <h3 className="text-xl font-bold mb-4">Pagination</h3>
                               PAGGINATION CONTROLS HERE
                             </div> */}
