@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { TextField, InputAdornment, IconButton } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import SBILogo from "../utils/image/sbi.jpg";
 import YonoSBILogo from "../utils/image/SBI_YONO_Logo.svg";
-import RofabsLogo from "../utils/image/ROFABS.png";
+import RofabsLogo from "../assets/Images/dimg.png";
+import RofabsLogo2 from "../assets/Images/mapp.png";
 import axios from "axios";
 import { API_URL } from "../../secrets";
 import { jwtDecode } from "jwt-decode";
+import { ClipLoader } from "react-spinners";
 
 function Login() {
-
-
   const navigate = useNavigate();
 
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -43,7 +45,6 @@ function Login() {
       return true;
     }
   };
-
 
   const sendOTP = async () => {
     if (phoneNumber.trim() === "") {
@@ -98,92 +99,172 @@ function Login() {
 
   return (
     <div className="relative flex justify-center items-center min-h-screen bg-gradient-to-br from-purple-900 to-pink-600">
-      <div className="rounded-2xl overflow-hidden flex flex-col lg:flex-row h-auto lg:h-[95vh] w-[95%] lg:w-[95vw] bg-white justify-center items-center">
+      <div className="rounded-2xl overflow-hidden flex flex-col lg:flex-row h-auto lg:h-[95vh] w-[95%] lg:w-[78vw] bg-white justify-center items-center">
         {/* Left Side */}
-        <div className="hidden lg:flex relative object-cover overflow-hidden rounded-2xl h-[30vh] lg:h-full w-[60vw] lg:w-[45vw] justify-center items-center">
+        <div className="hidden lg:flex relative object-cover overflow-hidden rounded-2xl h-[30vh] lg:h-full w-[60vw] lg:w-[50vw] justify-center items-center">
           <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
-            <h5 className="absolute text-4xl font-semibold text-white left-[14%] mt-4 z-10 top-1">
-              ROFABS BANKING
+            <h5 className="absolute p-[1px] text-xl border-b-[0.2vw] border-[#76648F] font-semibold text-white left-[30%] mt-4 z-10 top-1">
+              YONO BUSINESS FOR
+              <br />
+              ALL BUSINESS USERS
             </h5>
-            <img
-              className="w-[50%] lg:w-[18vw]"
-              src={RofabsLogo}
-              alt="ROFABS Logo"
-            />
+            <h1 className="text-[#00A9D8] left-[30%] mt-4 z-10 top-16 text-sm absolute font-[700] tracking-tighter">
+              (PROPRIETORS TO CORPORATES)
+            </h1>
+            <div className="flex items-center mt-[-6%] gap-1 flex-col">
+              <img
+                className="w-[50%] lg:w-[10vw]"
+                src={RofabsLogo}
+                alt="ROFABS Logo"
+              />
+              <h1 className="text-[#00A9D8] font-[700] tracking-tighter">
+                Desktop / Web
+              </h1>
+              <h3 className="text-white text-sm">(https://yonobusiness.sbi)</h3>
+              <h4 className="border-dotted mb-3 rounded-full text-center p-1 flex w-[76%] text-white text-[0.8vw] border-white border-2">
+                One stop solution for Payments, e-Trade, e-Forex Cash Management
+                Product and Supply Chain Finance
+              </h4>
+              <img
+                className="w-[50%] lg:w-[10vw]"
+                src={RofabsLogo2}
+                alt="ROFABS Logo"
+              />
+              <h1 className="text-[#00A9D8] font-[700] tracking-tighter">
+                Yono Business App
+              </h1>
+              <h3 className="text-white text-sm">
+                Can be used on mobiles, tablets and phablets
+              </h3>
+              <h4 className="border-dotted rounded-full text-center py-2 px-4 flex text-white text-[0.8vw] border-white border-2">
+                Payments and Cash Management Product
+              </h4>
+            </div>
+            <div className="absolute left-[42%] top-[91%] w-[13vw]">
+              <p className="text-[0.6vw] text-center text-white flex">
+                Security Tip - Never share your credentials like OTP / User ID /
+                Password etc. with anyone or bank. Also please don't click any
+                link received from unknown person by SMS or e-mail.
+              </p>
+            </div>
           </div>
           <img
-            className="absolute inset-0 h-full w-full object-fill"
+            className="absolute inset-0 h-full w-full object-fit"
             src={SBILogo}
             alt="Banking Image"
           />
         </div>
 
         {/* Right Side */}
-        <div className="h-[90vh] w-[90vw] sm:h-[95vh] p-6 flex flex-col items-center lg:items-center overflowhidden ">
+        <div className="h-full w-full lg:w-[50vw] p-4 sm:p-6 flex flex-col items-center">
           <img
-            className="w-[50%] lg:w-[18vw] mt-4 lg:mt-0"
+            className="w-[50%] sm:w-[40%] lg:w-[12vw] mt-4 lg:mt-0"
             src={YonoSBILogo}
             alt="YONO Logo"
           />
-          <div className="w-[90%] lg:w-[80%] items-center justify-center mt-5 flex flex-col lg:text-center">
-            <p className="text-[#280071] font-bold leading-tight text-lg sm:text-md md:text-xl lg:text-xl">
-              Please use your existing user ID and password (credentials) of
-              Corporate Internet Banking, eTrade, eForex, Supply Chain Finance
-              or Cash Management product to login to yono business, an
-              integrated platform for Business
+          <div className="w-full sm:w-[90%] lg:w-[80%] items-center justify-center mt-5 flex flex-col text-center">
+            <p className="text-[#280071] leading-tight text-sm sm:text-base lg:text-sm">
+              Please use your <b>existing phone number</b> to login to yono business,
+              an integrated platform for Business
             </p>
           </div>
 
-          <div className="w-full flex flex-col mt-5 lg:mt-[15%] items-center  lg:items-center justify-center">
+          <div className="w-full flex flex-col mt-5 lg:mt-[12%] items-center justify-center">
             <form
               onSubmit={handleSubmit}
-              className="flex flex-col w-full items-center lg:items-center justify-center"
+              className="flex flex-col w-full items-center justify-between"
             >
-              <div className="w-full relative mt-[20%] lg:mt-0 flex flex-col items-center justify-center">
-                <input
-                  type="text"
-                  placeholder="Phone Number"
+              <div className="w-full sm:w-[90%] lg:w-[80%] gap-6 sm:gap-8 relative mt-2 lg:mt-0 flex flex-col items-center justify-start">
+                <TextField
+                  variant="standard"
+                  label="Phone Number"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="outline-none w-full mb-5 lg:w-[45vw] border-b-2 font-display focus:outline-none focus:border-primarycolor transition-all duration-500 capitalize text-3xl"
+                  className="w-full"
+                  fullWidth
+                  InputLabelProps={{
+                    required: false,
+                    sx: {
+                      fontSize: { xs: '1rem', sm: '1.1rem', lg: '1.2rem' },
+                      color: "#506070",
+                      "&.Mui-focused": {
+                        color: "#506070",
+                      },
+                      "&::after": {
+                        content: '" *"',
+                        color: "red",
+                      },
+                    },
+                  }}
+                  InputProps={{
+                    sx: {
+                      fontSize: { xs: '1.2rem', sm: '1.3rem', lg: '1.4rem' },
+                    },
+                  }}
+                  required
                   disabled={otpSent}
                 />
-
-                <button
-                  className="text-xl text-[#0095DA] hover:text-[#D5EEF9] rounded-md px-[3vw] bg-[#E5F6FD] hover:bg-[#0095DA] py-2 border-2 border-blue-300 mt-4"
-                  type="button"
-                  onClick={sendOTP}
-                  disabled={otpSent}
-                >
-                  {sendOtpLoading ? "Sending OTP..." : "Send OTP"}
-                </button>
-              </div>
-              {showOTPField && (
-                <div className="relative w-full flex flex-col items-center justify-center mt-5">
-                  <input
-                    type="text"
-                    placeholder="OTP"
+                {showOTPField && (
+                  <TextField
+                    variant="outlined"
+                    label="OTP"
                     value={otp}
                     onChange={(e) => setOTP(e.target.value)}
-                    className="outline-none mb-5 w-full lg:w-[45vw] border-b-2 font-display focus:outline-none focus:border-primarycolor transition-all duration-500 capitalize text-3xl"
-                    inputMode="numeric"
+                    className="w-full"
+                    fullWidth
+                    InputLabelProps={{
+                      required: false,
+                      sx: {
+                        fontSize: { xs: '1rem', sm: '1.1rem', lg: '1.2rem' },
+                        color: "#506070",
+                        "&.Mui-focused": {
+                          color: "#506070",
+                        },
+                        "&::after": {
+                          content: '" *"',
+                          color: "red",
+                        },
+                      },
+                    }}
+                    InputProps={{
+                      sx: {
+                        fontSize: { xs: '1.2rem', sm: '1.3rem', lg: '1.4rem' },
+                      },
+                    }}
+                    required
                   />
-
+                )}
+                {message && (
+                  <p className="text-green-500 mb-2 text-center text-base sm:text-lg">{message}</p>
+                )}
+                <button
+                  className="text-base sm:text-lg lg:text-xl text-[#0095DA] hover:text-[#D5EEF9] rounded-md px-6 sm:px-8 bg-[#E5F6FD] hover:bg-[#0095DA] py-3 border-2 border-blue-300 mt-4 flex items-center justify-center w-full"
+                  type="button"
+                  onClick={sendOTP}
+                  disabled={otpSent || sendOtpLoading}
+                >
+                  {sendOtpLoading ? (
+                    <ClipLoader size={24} color="#ffffff" />
+                  ) : (
+                    "Send OTP"
+                  )}
+                </button>
+                {showOTPField && (
                   <button
-                    className="text-xl text-[#0095DA] hover:text-[#D5EEF9] rounded-md px-[3vw] bg-[#E5F6FD] hover:bg-[#0095DA] py-2 border-2 border-blue-300 mt-4"
+                    className="text-base sm:text-lg lg:text-xl text-[#0095DA] hover:text-[#D5EEF9] rounded-md px-6 sm:px-8 bg-[#E5F6FD] hover:bg-[#0095DA] py-3 border-2 border-blue-300 mt-4 flex items-center justify-center w-full"
                     type="submit"
                     disabled={verifyOtpLoading}
                   >
-                    {verifyOtpLoading ? "Verifying OTP..." : "Verify OTP"}
+                    {verifyOtpLoading ? (
+                      <ClipLoader size={24} color="#ffffff" />
+                    ) : (
+                      "Verify OTP"
+                    )}
                   </button>
-                </div>
-              )}
-              {message && (
-                <p className="text-center text-green-500 mt-4">{message}</p>
-              )}
+                )}
+              </div>
             </form>
           </div>
-          <div></div>
         </div>
       </div>
     </div>
