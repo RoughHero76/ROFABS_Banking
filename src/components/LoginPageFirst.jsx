@@ -7,6 +7,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import ReCAPTCHA from "react-google-recaptcha";
 import { API_URL } from "../../secrets";
 import axios from "axios";
+import { ClipLoader } from "react-spinners";
 
 function LoginPageFirst() {
   const [emailOrUsername, setEmailOrUsername] = useState("");
@@ -15,11 +16,12 @@ function LoginPageFirst() {
   const [errorMessage, setErrorMessage] = useState("");
   const [captchaResponse, setCaptchaResponse] = useState("");
   const [captchaError, setCaptchaError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setIsLoading(true);
     setErrorMessage("");
     setCaptchaError("");
 
@@ -50,6 +52,8 @@ function LoginPageFirst() {
         } else {
           setErrorMessage("An error occurred during login.");
         }
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -147,10 +151,15 @@ function LoginPageFirst() {
                   <p className="text-red-500 mb-2">{captchaError}</p>
                 )}
                 <button
-                  className="text-lg lg:text-xl text-[#0095DA] hover:text-[#D5EEF9] rounded-md px-[3vw] bg-[#E5F6FD] hover:bg-[#0095DA] py-2 border-2 border-blue-300 mt-4"
+                  className="text-lg lg:text-xl text-[#0095DA] hover:text-[#D5EEF9] rounded-md px-[3vw] bg-[#E5F6FD] hover:bg-[#0095DA] py-2 border-2 border-blue-300 mt-4 flex items-center justify-center"
                   type="submit"
+                  disabled={isLoading}
                 >
-                  Login
+                  {isLoading ? (
+                    <ClipLoader size={20} color="#ffffff" />
+                  ) : (
+                    "Login"
+                  )}
                 </button>
               </div>
             </form>
