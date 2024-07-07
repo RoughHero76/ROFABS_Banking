@@ -82,12 +82,12 @@ function LoginPageFirst() {
         {/* Left Side */}
         <div className="hidden lg:flex relative object-cover overflow-hidden rounded-2xl h-[30vh] lg:h-full w-[60vw] lg:w-[50vw] justify-center items-center">
           <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
-            <h5 className="absolute p-[1px] text-xl border-b-[0.2vw] border-[#76648F]  font-semibold text-white left-[30%] mt-4 z-10 top-1">
+            <h5 className="absolute p-[1px] text-xl border-b-[0.2vw] border-[#76648F]  font-semibold text-white left-[33%] mt-4 z-10 top-1">
               YONO BUSINESS FOR
               <br />
               ALL BUSINESS USERS
             </h5>
-            <h1 className="text-[#00A9D8] left-[30%] mt-4  z-10 top-16 text-sm absolute font-[700] tracking-tighter">
+            <h1 className="text-[#00A9D8] left-[33%] mt-4  z-10 top-16 text-sm absolute font-[700] tracking-tighter">
               (PROPRIETORS TO CORPORATES)
             </h1>
             <div className="flex items-center mt-[-6%]  gap-1 flex-col">
