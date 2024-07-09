@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import AdminDashboard from '../Views/Admin/AdminDashboard';
 import UserDashboard from '../Views/User/UserDashboard';
+import { isTokenExpired } from '../utils/auth'; // Assume this function exists
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -12,9 +13,12 @@ const Dashboard = () => {
     useEffect(() => {
         const token = localStorage.getItem('token');
         const storedDesignation = localStorage.getItem('designation');
-        if (!token) {
+
+        if (!token || isTokenExpired(token)) {
+            // Clear localStorage if token is missing or expired
+            localStorage.clear();
             navigate('/');
-            toast.error('Please log in to access the dashboard');
+            toast.error('Your session has expired. Please log in again.');
         } else {
             setDesignation(storedDesignation);
         }

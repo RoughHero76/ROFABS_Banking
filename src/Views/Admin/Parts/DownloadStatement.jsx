@@ -308,6 +308,7 @@ const DownloadStatement = ({ startDate, endDate }) => {
                                 </View>
                             </View>
                         ))}
+                        <Text>**This is computer generated statement and does not require a signature.</Text>
                     </View>
                 </Page>
             </Document>
