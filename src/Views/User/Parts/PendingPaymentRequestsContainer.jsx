@@ -134,14 +134,16 @@ const PendingPaymentRequestsContainer = ({ countOfPendingRequests }) => {
                                         </div>
                                         <div className="grid grid-cols-3 gap-4">
                                             <div>
-                                                <span className="font-bold">CFO Approval:</span> {request.CFOApproval}
-                                            </div>
-                                            <div>
-                                                <span className="font-bold">CMO Approval:</span> {request.CMOApproval}
-                                            </div>
-                                            <div>
                                                 <span className="font-bold">CEO Approval:</span> {request.CEOApproval}
                                             </div>
+                                            <div>
+                                                <span className="font-bold">COO Approval:</span> {request.COOApproval}
+                                            </div>
+                                            <div>
+                                                <span className="font-bold">MD Approval:</span> {request.MDApproval}
+                                            </div>
+
+
                                         </div>
                                         <div className="flex justify-end space-x-4">
                                             <button

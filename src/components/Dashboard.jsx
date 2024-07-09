@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import AdminDashboard from '../Views/Admin/AdminDashboard';
 import UserDashboard from '../Views/User/UserDashboard';
-import { isTokenExpired } from '../utils/auth'; // Assume this function exists
+import { isTokenExpired } from '../utils/auth'; 
 
 const Dashboard = () => {
     const navigate = useNavigate();

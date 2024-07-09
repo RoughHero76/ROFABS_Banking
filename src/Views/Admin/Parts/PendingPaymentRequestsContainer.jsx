@@ -178,22 +178,6 @@ const PendingPaymentRequests = () => {
                                         </div>
                                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                             <div className="flex items-center space-x-2">
-                                                <span className="font-bold">CFO Approval:</span>
-                                                {paymentRequest.CFOApproval === 'Approved' ? (
-                                                    <FaThumbsUp className="text-blue-500" />
-                                                ) : paymentRequest.CFOApproval === 'Pending' ? (
-                                                    <FaClock className="text-yellow-500" />
-                                                ) : null}
-                                            </div>
-                                            <div className="flex items-center space-x-2">
-                                                <span className="font-bold">CMO Approval:</span>
-                                                {paymentRequest.CMOApproval === 'Approved' ? (
-                                                    <FaThumbsUp className="text-blue-500" />
-                                                ) : paymentRequest.CMOApproval === 'Pending' ? (
-                                                    <FaClock className="text-yellow-500" />
-                                                ) : null}
-                                            </div>
-                                            <div className="flex items-center space-x-2">
                                                 <span className="font-bold">CEO Approval:</span>
                                                 {paymentRequest.CEOApproval === 'Approved' ? (
                                                     <FaThumbsUp className="text-blue-500" />
@@ -201,6 +185,23 @@ const PendingPaymentRequests = () => {
                                                     <FaClock className="text-yellow-500" />
                                                 ) : null}
                                             </div>
+                                            <div className="flex items-center space-x-2">
+                                                <span className="font-bold">COO Approval:</span>
+                                                {paymentRequest.COOApproval === 'Approved' ? (
+                                                    <FaThumbsUp className="text-blue-500" />
+                                                ) : paymentRequest.COOApproval === 'Pending' ? (
+                                                    <FaClock className="text-yellow-500" />
+                                                ) : null}
+                                            </div>
+                                            <div className="flex items-center space-x-2">
+                                                <span className="font-bold">MD Approval:</span>
+                                                {paymentRequest.MDApproval === 'Approved' ? (
+                                                    <FaThumbsUp className="text-blue-500" />
+                                                ) : paymentRequest.MDApproval === 'Pending' ? (
+                                                    <FaClock className="text-yellow-500" />
+                                                ) : null}
+                                            </div>
+
                                         </div>
                                         <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4">
                                             <button
