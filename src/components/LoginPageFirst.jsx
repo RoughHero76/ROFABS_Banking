@@ -43,6 +43,7 @@ function LoginPageFirst() {
         console.log("Login response:", response.data);
         if (response.data.message === "Login successful") {
           localStorage.setItem("emailLogin", response.data.token);
+          localStorage.setItem("userPhoneNumber", response.data.phone); 
           navigate("/login");
         } else {
           setErrorMessage("Invalid email, username, or password.");

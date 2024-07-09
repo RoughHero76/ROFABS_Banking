@@ -8,10 +8,14 @@ import { BeatLoader } from "react-spinners";
 import { toast } from "react-toastify";
 import { motion } from 'framer-motion';
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const UserPaymentRequestHistory = () => {
+
+    const navigate = useNavigate();
+
     const [paymentRequests, setPaymentRequests] = useState([]);
     const [filteredPaymentRequests, setFilteredPaymentRequests] = useState([]);
     const [expandedRequests, setExpandedRequests] = useState([]);
@@ -136,6 +140,10 @@ const UserPaymentRequestHistory = () => {
         setStartDate(null);
         setEndDate(null);
     };
+    const handleTransactionHistory = () => {
+        navigate('/transactionHistory');
+    }
+
 
     const handleDownloadPaymentHistory = async () => {
 
@@ -186,7 +194,7 @@ const UserPaymentRequestHistory = () => {
                 >
                     <div className="container mx-auto px-4 py-2">
                         <h2 className="text-2xl font-bold mb-4">Payment Request History</h2>
-                        <div className="bg-white shadow-md rounded-lg overflow-hidden">
+                        <div className="bg-white shadow-md rounded-lg overflow-visible">
                             <div className="px-4 py-2">
                                 <input
                                     type="text"
@@ -249,6 +257,12 @@ const UserPaymentRequestHistory = () => {
                                         </div>
                                     )}
                                 </div>
+                                <button
+                                    onClick={handleTransactionHistory}
+                                    className="px-4 py-2 bg-gradient-to-r from-reddish-purple to-deep-purple text-white rounded-md focus:outline-none hover:scale-105"
+                                >
+                                    Transaction History
+                                </button>
                                 <button
                                     onClick={handleClearFilters}
                                     className="px-4 py-2 bg-red-500 text-white rounded-md focus:outline-none hover:bg-red-600"

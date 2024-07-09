@@ -13,7 +13,8 @@ import { ClipLoader } from "react-spinners";
 
 function Login() {
   const navigate = useNavigate();
-
+  const [allowManualEntry, setAllowManualEntry] = useState(false);
+  const [timeoutId, setTimeoutId] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOTP] = useState("");
   const [showOTPField, setShowOTPField] = useState(false);
@@ -22,16 +23,108 @@ function Login() {
   const [sendOtpLoading, setSendOtpLoading] = useState(false);
   const [verifyOtpLoading, setVerifyOtpLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
+  const [countdown, setCountdown] = useState(60);
 
+  useEffect(() => {
+    const handleContextMenu = (e) => {
+      e.preventDefault();
+    };
+
+    const handleKeyDown = (e) => {
+      if (e.keyCode === 123 ||
+        (e.ctrlKey && e.shiftKey && e.keyCode === 73) ||
+        (e.ctrlKey && e.shiftKey && e.keyCode === 74) ||
+        (e.ctrlKey && e.keyCode === 85)) {
+        e.preventDefault();
+      }
+    };
+
+    const handleDevTools = () => {
+      if (window.devtools.isOpen) {
+        window.location.href = "/";
+      }
+    };
+
+    document.addEventListener('contextmenu', handleContextMenu);
+    document.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('devtoolschange', handleDevTools);
+
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu);
+      document.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('devtoolschange', handleDevTools);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      e.preventDefault();
+      e.returnValue = '';
+      localStorage.clear();
+
+
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
   useEffect(() => {
     const emailToken = localStorage.getItem("emailLogin");
     const phoneToken = localStorage.getItem("token");
+    const storedPhoneNumber = localStorage.getItem("userPhoneNumber");
 
     if (emailToken && phoneToken) {
       navigate("/dashboard");
     } else if (!emailToken) {
       navigate("/");
+    } else if (storedPhoneNumber) {
+      try {
+        const formattedPhone = storedPhoneNumber.replace(/^91/, '');
+        setPhoneNumber(formattedPhone);
+        sendOTP(formattedPhone);
+
+        // Set a timeout to allow manual entry after 1 minute
+        const id = setTimeout(() => {
+          setAllowManualEntry(true);
+          setOtpSent(false);
+        }, 60000);
+        setTimeoutId(id);
+
+        // Set up countdown
+        setCountdown(60);
+        const countdownInterval = setInterval(() => {
+          setCountdown((prevCount) => {
+            if (prevCount <= 1) {
+              clearInterval(countdownInterval);
+              return 0;
+            }
+            return prevCount - 1;
+          });
+        }, 1000);
+
+        // Cleanup function to clear the timeout and interval
+        return () => {
+          if (timeoutId) clearTimeout(timeoutId);
+          clearInterval(countdownInterval);
+        };
+      } catch (error) {
+        console.error('Error processing phone number:', error);
+        setMessage("Error processing phone number. Please try logging in again.");
+        setAllowManualEntry(true);
+      }
+    } else {
+      console.error('Phone number not found in storage');
+      setMessage("Error: Phone number not found. Please enter your phone number manually.");
+      setAllowManualEntry(true);
     }
+
+    // Cleanup function if no timeout was set
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, [navigate]);
 
   const isTokenExpired = (token) => {
@@ -46,20 +139,25 @@ function Login() {
     }
   };
 
-  const sendOTP = async () => {
-    if (phoneNumber.trim() === "") {
-      setMessage("Please enter a phone number");
+  const sendOTP = async (phone) => {
+    if (!phone || phone.trim() === "" || !/^\d{10}$/.test(phone.trim())) {
+      setMessage("Please enter a valid 10-digit phone number");
       return;
     }
 
     try {
       setSendOtpLoading(true);
       const response = await axios.get(
-        `${API_URL}/api/v1/auth/sendOtp?phoneNumber=${phoneNumber}`
+        `${API_URL}/api/v1/auth/sendOtp?phoneNumber=${phone}`
       );
       setMessage(response.data.message);
       setShowOTPField(true);
       setOtpSent(true);
+      // Clear the timeout if OTP is sent manually
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        setTimeoutId(null);
+      }
     } catch (error) {
       console.error(error);
       setMessage("An error occurred while sending the OTP");
@@ -87,7 +185,7 @@ function Login() {
       localStorage.setItem("designation", response.data.Designation);
       localStorage.setItem("name", response.data.Name);
       console.log(response.data);
-
+      localStorage.removeItem("userPhoneNumber");
       navigate("/dashboard");
     } catch (error) {
       console.error(error);
@@ -202,8 +300,18 @@ function Login() {
                     },
                   }}
                   required
-                  disabled={otpSent}
+                  disabled={otpSent && !allowManualEntry}
                 />
+                {showOTPField && (
+                  <button
+                    className="text-sm text-blue-500 mt-2"
+                    type="button"
+                    onClick={() => sendOTP(phoneNumber)}
+                    disabled={sendOtpLoading || countdown > 0}
+                  >
+                    {sendOtpLoading ? "Sending..." : "Resend OTP"}
+                  </button>
+                )}
                 {showOTPField && (
                   <TextField
                     variant="outlined"
@@ -235,20 +343,31 @@ function Login() {
                   />
                 )}
                 {message && (
-                  <p className="text-green-500 mb-2 text-center text-base sm:text-lg">{message}</p>
+                  <p className={`mb-2 text-center text-base sm:text-lg ${message.toLowerCase().includes('error') ? 'text-red-500' : 'text-green-500'}`}>
+                    {message}
+                  </p>
                 )}
-                <button
-                  className="text-base sm:text-lg lg:text-xl text-[#0095DA] hover:text-[#D5EEF9] rounded-md px-6 sm:px-8 bg-[#E5F6FD] hover:bg-[#0095DA] py-3 border-2 border-blue-300 mt-4 flex items-center justify-center w-full"
-                  type="button"
-                  onClick={sendOTP}
-                  disabled={otpSent || sendOtpLoading}
-                >
-                  {sendOtpLoading ? (
-                    <ClipLoader size={24} color="#ffffff" />
-                  ) : (
-                    "Send OTP"
-                  )}
-                </button>
+                {!allowManualEntry && otpSent && (
+                  <p className="text-gray-500 text-sm mt-2">
+                    Manual entry allowed in {countdown} seconds
+                  </p>
+                )}
+
+                {(allowManualEntry || !otpSent) && (
+                  <button
+                    className="text-base sm:text-lg lg:text-xl text-[#0095DA] hover:text-[#D5EEF9] rounded-md px-6 sm:px-8 bg-[#E5F6FD] hover:bg-[#0095DA] py-3 border-2 border-blue-300 mt-4 flex items-center justify-center w-full"
+                    type="button"
+                    onClick={() => sendOTP(phoneNumber)}
+                    disabled={sendOtpLoading}
+                  >
+                    {sendOtpLoading ? (
+                      <ClipLoader size={24} color="#ffffff" />
+                    ) : (
+                      "Send OTP"
+                    )}
+                  </button>
+                )}
+
                 {showOTPField && (
                   <button
                     className="text-base sm:text-lg lg:text-xl text-[#0095DA] hover:text-[#D5EEF9] rounded-md px-6 sm:px-8 bg-[#E5F6FD] hover:bg-[#0095DA] py-3 border-2 border-blue-300 mt-4 flex items-center justify-center w-full"

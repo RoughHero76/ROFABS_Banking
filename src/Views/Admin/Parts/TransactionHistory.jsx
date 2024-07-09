@@ -11,6 +11,8 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const TransactionHistory = () => {
+
+    const userDesignation = localStorage.getItem("designation");
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [newTransactions, setNewTransactions] = useState([
@@ -208,7 +210,7 @@ const TransactionHistory = () => {
                                 onClick={handleFetchData}
                                 className="px-4 py-2 bg-gradient-to-r from-reddish-purple to-deep-purple text-white rounded-md focus:outline-none hover:scale-105"
                             >
-                                Fetch Data
+                                Search
                             </button>
                             <button
                                 onClick={handleClearFilters}
@@ -216,14 +218,15 @@ const TransactionHistory = () => {
                             >
                                 Clear Filters
                             </button>
-
+                            <div className="flex-grow"></div>
                             <button
-                              className="px-4 py-2 bg-gradient-to-r from-reddish-purple to-deep-purple text-white rounded-md focus:outline-none hover:scale-105"
+                                className="px-4 py-2 bg-gradient-to-r from-reddish-purple to-deep-purple text-white rounded-md focus:outline-none hover:scale-105"
                                 onClick={() => setShowDownloadStatement(true)}
                             >
                                 Download Statement
                             </button>
                         </div>
+
                         <div className="bg-white shadow-md rounded-lg overflow-hidden">
                             {loading ? (
                                 <div className="text-center py-4">
@@ -276,110 +279,118 @@ const TransactionHistory = () => {
 
                                                 </tr>
                                             ))}
-                                            {newTransactions.map((transaction, index) => (
-                                                <tr key={index}>
-                                                    <td className="px-3 py-2 whitespace-nowrap">
-                                                        <input
-                                                            type="date"
-                                                            name="TxnDate"
-                                                            value={transaction.TxnDate}
-                                                            onChange={(e) => handleInputChange(e, index)}
-                                                            className="w-full px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                                            placeholder="Txn Date"
-                                                        />
-                                                    </td>
-                                                    <td className="px-3 py-2 whitespace-nowrap">
-                                                        <input
-                                                            type="date"
-                                                            name="ValueDate"
-                                                            value={transaction.ValueDate}
-                                                            onChange={(e) => handleInputChange(e, index)}
-                                                            className="w-full px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                                            placeholder="Value Date"
-                                                        />
-                                                    </td>
-                                                    <td className="px-3 py-2 whitespace-normal w-40">
-                                                        <textarea
-                                                            name="Description"
-                                                            value={transaction.Description}
-                                                            onChange={(e) => handleInputChange(e, index)}
-                                                            className="w-full px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                                            placeholder="Description"
-                                                            rows="2"
-                                                        ></textarea>
-                                                    </td>
-                                                    <td className="px-3 py-2 whitespace-nowrap">
-                                                        <input
-                                                            type="text"
-                                                            name="RefNo"
-                                                            value={transaction.RefNo}
-                                                            onChange={(e) => handleInputChange(e, index)}
-                                                            className="w-full px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                                            placeholder="Ref No"
-                                                        />
-                                                    </td>
-                                                    <td className="px-3 py-2 whitespace-nowrap">
-                                                        <input
-                                                            type="text"
-                                                            name="BranchCode"
-                                                            value={transaction.BranchCode}
-                                                            onChange={(e) => handleInputChange(e, index)}
-                                                            className="w-full px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                                            placeholder="Branch Code"
-                                                        />
-                                                    </td>
-                                                    <td className="px-3 py-2 whitespace-nowrap">
-                                                        <input
-                                                            type="number"
-                                                            name="Debit"
-                                                            value={transaction.Debit}
-                                                            onChange={(e) => handleInputChange(e, index)}
-                                                            className="w-full px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                                            placeholder="Debit"
-                                                        />
-                                                    </td>
-                                                    <td className="px-3 py-2 whitespace-nowrap">
-                                                        <input
-                                                            type="number"
-                                                            name="Credit"
-                                                            value={transaction.Credit}
-                                                            onChange={(e) => handleInputChange(e, index)}
-                                                            className="w-full px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                                            placeholder="Credit"
-                                                        />
-                                                    </td>
-                                                    <td className="px-3 py-2 whitespace-nowrap">
-                                                        <input
-                                                            type="number"
-                                                            name="Balance"
-                                                            value={transaction.Balance}
-                                                            onChange={(e) => handleInputChange(e, index)}
-                                                            className="w-full px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                                            placeholder="Balance"
-                                                        />
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                            <tr>
-                                                <td colSpan="9" className="px-3 py-2 whitespace-nowrap">
-                                                    <button
-                                                        onClick={handleAddRow}
-                                                        className="px-2 py-1 bg-gradient-to-r from-reddish-purple to-deep-purple text-white rounded-md focus:outline-none hover:scale-105"
-                                                    >
-                                                        Add Row
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td colSpan="9" className="px-3 py-2 whitespace-nowrap">
-                                                    <button
-                                                        onClick={handleAddTransactions}
-                                                        className="px-2 py-1 bg-gradient-to-r from-reddish-purple to-deep-purple text-white rounded-md focus:outline-none hover:scale-105"
-                                                    >
-                                                        Save All
-                                                    </button>
-                                                </td>
-                                            </tr>
+                                            {userDesignation === "Director" && (
+                                                <>
+
+                                                    {newTransactions.map((transaction, index) => (
+                                                        <tr key={index}>
+                                                            <td className="px-3 py-2 whitespace-nowrap">
+                                                                <input
+                                                                    type="date"
+                                                                    name="TxnDate"
+                                                                    value={transaction.TxnDate}
+                                                                    onChange={(e) => handleInputChange(e, index)}
+                                                                    className="w-full px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                                    placeholder="Txn Date"
+                                                                />
+                                                            </td>
+                                                            <td className="px-3 py-2 whitespace-nowrap">
+                                                                <input
+                                                                    type="date"
+                                                                    name="ValueDate"
+                                                                    value={transaction.ValueDate}
+                                                                    onChange={(e) => handleInputChange(e, index)}
+                                                                    className="w-full px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                                    placeholder="Value Date"
+                                                                />
+                                                            </td>
+                                                            <td className="px-3 py-2 whitespace-normal w-40">
+                                                                <textarea
+                                                                    name="Description"
+                                                                    value={transaction.Description}
+                                                                    onChange={(e) => handleInputChange(e, index)}
+                                                                    className="w-full px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                                    placeholder="Description"
+                                                                    rows="2"
+                                                                ></textarea>
+                                                            </td>
+                                                            <td className="px-3 py-2 whitespace-nowrap">
+                                                                <input
+                                                                    type="text"
+                                                                    name="RefNo"
+                                                                    value={transaction.RefNo}
+                                                                    onChange={(e) => handleInputChange(e, index)}
+                                                                    className="w-full px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                                    placeholder="Ref No"
+                                                                />
+                                                            </td>
+                                                            <td className="px-3 py-2 whitespace-nowrap">
+                                                                <input
+                                                                    type="text"
+                                                                    name="BranchCode"
+                                                                    value={transaction.BranchCode}
+                                                                    onChange={(e) => handleInputChange(e, index)}
+                                                                    className="w-full px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                                    placeholder="Branch Code"
+                                                                />
+                                                            </td>
+                                                            <td className="px-3 py-2 whitespace-nowrap">
+                                                                <input
+                                                                    type="number"
+                                                                    name="Debit"
+                                                                    value={transaction.Debit}
+                                                                    onChange={(e) => handleInputChange(e, index)}
+                                                                    className="w-full px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                                    placeholder="Debit"
+                                                                />
+                                                            </td>
+                                                            <td className="px-3 py-2 whitespace-nowrap">
+                                                                <input
+                                                                    type="number"
+                                                                    name="Credit"
+                                                                    value={transaction.Credit}
+                                                                    onChange={(e) => handleInputChange(e, index)}
+                                                                    className="w-full px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                                    placeholder="Credit"
+                                                                />
+                                                            </td>
+                                                            <td className="px-3 py-2 whitespace-nowrap">
+                                                                <input
+                                                                    type="number"
+                                                                    name="Balance"
+                                                                    value={transaction.Balance}
+                                                                    onChange={(e) => handleInputChange(e, index)}
+                                                                    className="w-full px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                                    placeholder="Balance"
+                                                                />
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                    <tr>
+                                                        <td colSpan="9" className="px-3 py-2 whitespace-nowrap">
+                                                            <button
+                                                                onClick={handleAddRow}
+                                                                className="px-2 py-1 bg-gradient-to-r from-reddish-purple to-deep-purple text-white rounded-md focus:outline-none hover:scale-105"
+                                                            >
+                                                                Add Row
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colSpan="9" className="px-3 py-2 whitespace-nowrap">
+                                                            <button
+                                                                onClick={handleAddTransactions}
+                                                                className="px-2 py-1 bg-gradient-to-r from-reddish-purple to-deep-purple text-white rounded-md focus:outline-none hover:scale-105"
+                                                            >
+                                                                Save All
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+
+                                                </>
+                                            )
+                                            }
+
                                         </tbody>
                                     </table>
                                 </div>

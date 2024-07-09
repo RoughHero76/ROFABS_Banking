@@ -8,6 +8,34 @@ import { ClipLoader, BeatLoader } from "react-spinners";
 import sbiLogo from "../../../assets/sbiLogo.jpg";
 
 const styles = StyleSheet.create({
+    detailsTable: {
+        display: 'table',
+        width: 'auto',
+        borderStyle: 'solid',
+        borderWidth: 0,
+        borderRightWidth: 0,
+        borderBottomWidth: 0,
+        marginTop: 20,
+    },
+    detailsRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 3,
+    },
+    detailsHeading: {
+        width: '20%',
+        fontWeight: 'bold',
+    },
+    otherAddressDetails: {
+        marginLeft: '37%',
+
+    },
+    detailsValue: {
+        width: '80%',
+    },
+    comaa: {
+        width: '2%',
+    },
     page: {
         fontFamily: "Helvetica",
         fontSize: 11,
@@ -18,8 +46,8 @@ const styles = StyleSheet.create({
         flexDirection: "column",
     },
     logo: {
-        width: 100,
-        height: 60,
+        width: 120,
+        height: 65,
         marginBottom: 20,
     },
     table: {
@@ -45,6 +73,26 @@ const styles = StyleSheet.create({
     },
     descriptionCol: {
         width: "30%",
+        wordBreak: 'break-word',
+        whiteSpace: 'pre-wrap',
+    },
+    descriptionCell: {
+        fontSize: 7,
+        flexWrap: "wrap",
+        wordBreak: 'break-word',
+        whiteSpace: 'pre-wrap',
+    },
+
+    refNoCol: {
+        width: "10%",
+        wordBreak: 'break-word',
+        whiteSpace: 'pre-wrap',
+    },
+    refNoCell: {
+        fontSize: 7,
+        flexWrap: "wrap",
+        wordBreak: 'break-word',
+        whiteSpace: 'pre-wrap',
     },
     tableCell: {
         fontSize: 7,
@@ -53,7 +101,8 @@ const styles = StyleSheet.create({
         wordBreak: 'break-word',
     },
 
-    statmentDate:{
+
+    statmentDate: {
         marginTop: 20,
     }
 });
@@ -69,6 +118,11 @@ const DownloadStatement = ({ startDate, endDate }) => {
         fetchData();
     }, [startDate, endDate]);
 
+    const splitLongWords = (text, maxLength = 10) => {
+        return text.split(' ').map(word =>
+            word.length > maxLength ? word.match(new RegExp(`.{1,${maxLength}}`, 'g')).join(' ') : word
+        ).join(' ');
+    };
     const fetchData = async () => {
         setIsLoading(true);
         setError(null);
@@ -106,24 +160,86 @@ const DownloadStatement = ({ startDate, endDate }) => {
                     <Image style={styles.logo} src={sbiLogo} />
                     {bankDetails && (
                         <>
-                            <View>
-                                <Text>Account Name : {bankDetails.accountName}</Text>
-                                <Text>Address : {bankDetails.address}</Text>
-                                <Text>Account Number : {bankDetails.accountNumber}</Text>
-                                <Text>Account Description : {bankDetails.accountDescription}</Text>
-                                <Text>Branch : {bankDetails.branch}</Text>
-                                <Text>Drawing Power : {bankDetails.drawingPower}</Text>
-                                <Text>Interest Rate (PA) : {bankDetails.interestRatePA}</Text>
-                                <Text>MOD Balance : {bankDetails.modBalance}</Text>
-                                <Text>CIF No : {bankDetails.cifNo}</Text>
-                                <Text>IFS Code : {bankDetails.ifsCode}</Text>
-                                <Text>MICR Code : {bankDetails.micrCode}</Text>
-                            </View>
-                            
-                            <View style={styles.statmentDate}>
-                                <Text>Account Statement from {startDate && startDate.toISOString().split("T")[0]} to {endDate && endDate.toISOString().split("T")[0]}</Text>
+                            <View style={styles.detailsTable}>
+                                <View style={styles.detailsRow}>
+                                    <Text style={styles.detailsHeading}>Account Name</Text>
+                                    <Text style={styles.comaa}>:</Text>
+                                    <Text style={styles.detailsValue}>{bankDetails.accountName}</Text>
+                                </View>
+                                <View style={styles.detailsRow}>
+                                    <Text style={styles.detailsHeading}>Address</Text>
+                                    <Text style={styles.comaa}>:</Text>
+                                    <Text style={styles.detailsValue}>{bankDetails.address}</Text>
+
+                                </View>
+                                <View style={styles.detailsRow}>
+                                    <View style={{ flexDirection: 'column' }}>
+
+                                        <Text style={styles.otherAddressDetails}>{bankDetails.city}</Text>
+                                        <Text style={styles.otherAddressDetails}>{bankDetails.state}</Text>
+                                        <Text style={styles.otherAddressDetails}>{bankDetails.country}</Text>
+                                    </View>
+                                </View>
+                                <View style={styles.detailsRow}>
+                                    <Text style={styles.detailsHeading}>Account Number</Text>
+                                    <Text style={styles.comaa}>:</Text>
+                                    <Text style={styles.detailsValue}>{bankDetails.accountNumber}</Text>
+                                </View>
+                                <View style={styles.detailsRow}>
+                                    <Text style={styles.detailsHeading}>Account Description</Text>
+                                    <Text style={styles.comaa}>:</Text>
+                                    <Text style={styles.detailsValue}>{bankDetails.accountDescription}</Text>
+                                </View>
+                                <View style={styles.detailsRow}>
+                                    <Text style={styles.detailsHeading}>Branch</Text>
+                                    <Text style={styles.comaa}>:</Text>
+                                    <Text style={styles.detailsValue}>{bankDetails.branch}</Text>
+                                </View>
+                                <View style={styles.detailsRow}>
+                                    <Text style={styles.detailsHeading}>Drawing Power</Text>
+                                    <Text style={styles.comaa}>:</Text>
+                                    <Text style={styles.detailsValue}>{bankDetails.drawingPower}.00</Text>
+                                </View>
+                                <View style={styles.detailsRow}>
+                                    <Text style={styles.detailsHeading}>Interest Rate (% p.a.)</Text>
+                                    <Text style={styles.comaa}>:</Text>
+                                    <Text style={styles.detailsValue}>{bankDetails.interestRatePA}.0</Text>
+                                </View>
+                                <View style={styles.detailsRow}>
+                                    <Text style={styles.detailsHeading}>MOD Balance</Text>
+                                    <Text style={styles.comaa}>:</Text>
+                                    <Text style={styles.detailsValue}>{bankDetails.modBalance}.00</Text>
+                                </View>
+                                <View style={styles.detailsRow}>
+                                    <Text style={styles.detailsHeading}>CIF No</Text>
+                                    <Text style={styles.comaa}>:</Text>
+                                    <Text style={styles.detailsValue}>{bankDetails.cifNo}</Text>
+                                </View>
+                                <View style={styles.detailsRow}>
+                                    <Text style={styles.detailsHeading}>IFS Code</Text>
+                                    <Text style={styles.comaa}>:</Text>
+                                    <Text style={styles.detailsValue}>{bankDetails.ifsCode}</Text>
+                                </View>
+                                <View style={styles.detailsRow}>
+                                    <Text style={styles.detailsHeading}>MICR Code</Text>
+                                    <Text style={styles.comaa}>:</Text>
+                                    <Text style={styles.detailsValue}>{bankDetails.micrCode}</Text>
+                                </View>
                             </View>
 
+                            <View style={styles.statmentDate}>
+                                <Text>
+                                    Account Statement from {
+                                        startDate
+                                            ? startDate.toISOString().split("T")[0]
+                                            : "2024-04-19 "
+                                    } to {
+                                        endDate
+                                            ? endDate.toISOString().split("T")[0]
+                                            : new Date().toISOString().split("T")[0]
+                                    }
+                                </Text>
+                            </View>
                         </>
 
 
@@ -169,10 +285,14 @@ const DownloadStatement = ({ startDate, endDate }) => {
                                     </Text>
                                 </View>
                                 <View style={[styles.tableCol, styles.descriptionCol]}>
-                                    <Text style={[styles.tableCell, { flexWrap: 'wrap' }]}>{transaction.Description}</Text>
+                                    <Text style={styles.descriptionCell}>
+                                        {splitLongWords(transaction.Description)}
+                                    </Text>
                                 </View>
-                                <View style={styles.tableCol}>
-                                    <Text style={styles.tableCell}>{transaction.RefNo}</Text>
+                                <View style={[styles.tableCol, styles.refNoCol]}>
+                                    <Text style={styles.refNoCell}>
+                                        {splitLongWords(transaction.RefNo)}
+                                    </Text>
                                 </View>
                                 <View style={styles.tableCol}>
                                     <Text style={styles.tableCell}>{transaction.BranchCode}</Text>
@@ -211,7 +331,7 @@ const DownloadStatement = ({ startDate, endDate }) => {
 
     if (isLoading) {
         return (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <ClipLoader color="#36D7B7" size={50} />
             </div>
         );
