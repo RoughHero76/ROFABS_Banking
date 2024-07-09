@@ -47,6 +47,9 @@ const AdminDashboard = () => {
         setUserCount(data.userCount);
         setBeneficiaryCount(data.beneficiaryCount);
         setPaymentRequestsCount(data.paymentRequestCount);
+      } else if (response.data.message === 'Invalid token' || response.data.message === 'Token expired') {
+        localStorage.clear();
+        navigate('/login');
       }
     } catch (error) {
       console.error('Error fetching counts:', error);

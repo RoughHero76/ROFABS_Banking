@@ -43,6 +43,11 @@ const UserDashboard = () => {
       });
       const count = response.data.data;
       setCountOfPendingRequests(count);
+
+      if (response.data.message === 'Invalid token' || response.data.message === 'Token expired') {
+        localStorage.clear();
+        navigate('/login');
+      }
     } catch (error) {
       console.error("Error fetching count of pending requests:", error);
       toast.error(error.response?.data?.message || "An error occurred while fetching count of pending requests");
@@ -85,7 +90,7 @@ const UserDashboard = () => {
       <div className="flex-1 flex flex-col">
         <Header />
         <main className="p-6 flex-1">
-        
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -147,10 +152,10 @@ const UserDashboard = () => {
               <div className="mt-8">
 
                 {/*  <PaymentRequestsContainer /> */}
-                <PendingPaymentRequestsContainer 
-                countOfPendingRequests={countOfPendingRequests}
-                
-                /> 
+                <PendingPaymentRequestsContainer
+                  countOfPendingRequests={countOfPendingRequests}
+
+                />
               </div>
             )}
 
