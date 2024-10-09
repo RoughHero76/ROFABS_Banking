@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guest Registration Card</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Oswald&display=swap');
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #ffffff;
+            font-size: 12px;
+        }
+
+        .page {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #000;
+        }
+
+        .title {
+            font-size: 24px;
+            text-align: center;
+            font-family: 'Oswald', sans-serif;
+            margin-bottom: 20px;
+        }
+
+        .main-view {
+            border: 1px solid black;
+            margin: 5px;
+            padding: 5px;
+        }
+
+        .section {
+            margin-bottom: 10px;
+        }
+
+        .row {
+            display: flex;
+            border-bottom: 0.5px solid black;
+            padding-bottom: 2px;
+            margin-bottom: 2px;
+        }
+
+        .column {
+            flex: 1;
+            margin-right: 5px;
+        }
+
+        .label {
+            font-size: 10px;
+            color: black;
+            font-family: 'Oswald', sans-serif;
+        }
+
+        .value {
+            font-size: 10px;
+            margin-left: 1px;
+            margin-top: 1px;
+        }
+
+        .checkbox {
+            width: 10px;
+            height: 10px;
+            border: 0.5px solid black;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .signature {
+            display: flex;
+            margin-top: 10px;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .payment-column {
+            flex: 1;
+        }
+
+        .payment-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .border-section {
+            border: 0.5px solid black;
+            padding: 5px;
+        }
+
+        .small-text {
+            font-size: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <h1 class="title">Guest Registration Card</h1>
+
+        <div class="main-view">
+            <div class="section">
+                <div class="row border-section">
+                    <div class="column" style="flex: 2;">
+                        <div class="row">
+                            <div class="column">
+                                <div class="label">Name:</div>
+                                <div class="value">[Guest Name]</div>
+                            </div>
+                            <div class="column">
+                                <div class="label">Surname:</div>
+                                <div class="value">[Guest Surname]</div>
+                            </div>
+                            <div class="column">
+                                <div class="label">First Name:</div>
+                                <div class="value">[Guest First Name]</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column">
+                                <div class="label">Company:</div>
+                                <div class="value">[Company]</div>
+                            </div>
+                            <div class="column">
+                                <div class="label">Profession:</div>
+                                <div class="value">[Profession]</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column">
+                                <div class="label">Travel Agent:</div>
+                                <div class="value">[Travel Agent]</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column">
+                                <div class="label">Address:</div>
+                                <div class="value">[Address]</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column">
+                                <div class="label">City:</div>
+                                <div class="value">[City]</div>
+                            </div>
+                            <div class="column">
+                                <div class="label">Country:</div>
+                                <div class="value">[Country]</div>
+                            </div>
+                            <div class="column">
+                                <div class="label">State:</div>
+                                <div class="value">[State]</div>
+                            </div>
+                            <div class="column">
+                                <div class="label">Postal Code:</div>
+                                <div class="value">[Postal Code]</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column">
+                                <div class="label">E-mail:</div>
+                                <div class="value">[Email]</div>
+                            </div>
+                            <div class="column">
+                                <div class="label">Phone/Fax:</div>
+                                <div class="value">[Phone/Fax]</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column">
+                                <div class="label">Priority Club Number:</div>
+                                <div class="value">[Priority Club Number]</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column" style="flex: 1;">
+                        <div class="row">
+                            <div class="column">
+                                <div class="label">Passport No:</div>
+                                <div class="value">[Passport Number]</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column">
+                                <div class="label">Date of Issue:</div>
+                                <div class="value">[Date of Issue]</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column">
+                                <div class="label">Date of Expiry:</div>
+                                <div class="value">[Date of Expiry]</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column">
+                                <div class="label">Place Of Issue:</div>
+                                <div class="value">[Place of Issue]</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column">
+                                <div class="label">Nationality:</div>
+                                <div class="value">[Nationality]</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column">
+                                <div class="label">Date of Birth:</div>
+                                <div class="value">[Date of Birth]</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column">
+                                <div class="label">VISA/ CRG No:</div>
+                                <div class="value">[VISA/CRG Number]</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column">
+                                <div class="label">Date Of Issue:</div>
+                                <div class="value">[Date of Issue]</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column">
+                                <div class="label">Date Of Expiry:</div>
+                                <div class="value">[Date of Expiry]</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column">
+                                <div class="label">Place of Issue:</div>
+                                <div class="value">[Place of Issue]</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column">
+                                <div class="label">Arrived From:</div>
+                                <div class="value">[Arrived From]</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column">
+                                <div class="label">Proceeding To:</div>
+                                <div class="value">[Proceeding To]</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column">
+                                <div class="label">Arrival In India:</div>
+                                <div class="value">[Arrival In India]</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column">
+                                <div class="label">Duration of stay:</div>
+                                <div class="value">[Duration of Stay]</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column">
+                                <div class="label">Purp Of Visit:</div>
+                                <div class="value">[Purpose of Visit]</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="row border-section">
+                    <div class="column">
+                        <div class="label">Arrival Date:</div>
+                        <div class="value">[Arrival Date]</div>
+                    </div>
+                    <div class="column">
+                        <div class="label">Arrival Flight:</div>
+                        <div class="value">[Arrival Flight]</div>
+                    </div>
+                    <div class="column">
+                        <div class="label">ETA:</div>
+                        <div class="value">[ETA]</div>
+                    </div>
+                    <div class="column">
+                        <div class="label">Departure Date:</div>
+                        <div class="value">[Departure Date]</div>
+                    </div>
+                    <div class="column">
+                        <div class="label">ETD:</div>
+                        <div class="value">[ETD]</div>
+                    </div>
+                    <div class="column">
+                        <div class="label">Drop Required:</div>
+                        <div class="value">[Drop Required]</div>
+                    </div>
+                    <div class="column">
+                        <div class="label">Departure Flight:</div>
+                        <div class="value">[Departure Flight]</div>
+                    </div>
+                </div>
+                <div class="row border-section">
+                    <div class="column">
+                        <div class="label">Room No. :</div>
+                        <div class="value">[Room No.]</div>
+                    </div>
+                    <div class="column">
+                        <div class="label">Room Type:</div>
+                        <div class="value">[Room Type]</div>
+                    </div>
+                    <div class="column">
+                        <div class="label">Room Rate:</div>
+                        <div class="value">[Room Rate]</div>
+                    </div>
+                    <div class="column">
+                        <div class="label">No. of Guests:</div>
+                        <div class="value">[No. of Guests]</div>
+                    </div>
+                    <div class="column">
+                        <div class="label">Reservation No. :</div>
+                        <div class="value">[Reservation No.]</div>
+                    </div>
+                    <div class="column">
+                        <div class="label">No. of Rooms:</div>
+                        <div class="value">[No. of Rooms]</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section border-section">
+                <div class="label">Mode of Payment:</div>
+                <div class="row">
+                    <div class="payment-column">
+                        <div class="payment-row">
+                            <span class="checkbox"></span>
+                            <span class="value">Cash</span>
+                        </div>
+                        <div class="payment-row">
+                            <span class="checkbox"></span>
+                            <span class="value">Visa Card</span>
+                        </div>
+                        <div class="payment-row">
+                            <span class="checkbox"></span>
+                            <span class="value">Master Card</span>
+                        </div>
+                    </div>
+                    <div class="payment-column">
+                        <div class="payment-row">
+                            <span class="checkbox"></span>
+                            <span class="value">American Express</span>
+                        </div>
+                        <div class="payment-row">
+                            <span class="checkbox"></span>
+                            <span class="value">Diners Card</span>
+                        </div>
+                        <div class="payment-row">
+                            <span class="checkbox"></span>
+                            <span class="value">JCB Card</span>
+                        </div>
+                    </div>
+                    <div class="payment-column">
+                        <div class="payment-row">
+                            <span class="checkbox"></span>
+                            <span class="value">Bills to Company</span>
+                        </div>
+                        <div class="payment-row">
+                            <span class="checkbox"></span>
+                            <span class="value">Voucher</span>
+                        </div>
+                        <div class="payment-row">
+                            <span class="checkbox"></span>
+                            <span class="value">Foreign Currency</span>
+                        </div>
+                    </div>
+                    <div class="payment-column">
+                        <div class="payment-row">
+                            <span class="checkbox"></span>
+                            <span class="value">Traveller's Cheques</span>
+                        </div>
+                        <div class="payment-row">
+                            <span class="checkbox"></span>
+                            <span class="value">Others (please specify)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="label">Credit Card Number:</div>
+                    <div class="value">[Credit Card Number]</div>
+                </div>
+                <div class="row">
+                    <div class="label">Expiry:</div>
+                    <div class="value">[Expiry]</div>
+                </div>
+                <div class="row">
+                    <div class="label">GST No:</div>
+                    <div class="value">[GST No]</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="value">Remark:</div>
+            </div>
+
+            <div class="section small-text">
+                <p>Check-in time is 1400Hrs and Check-out time is 1200Hrs. Visitors are not permitted in guest room. The
+                    hotel is not responsible for the safety of any valuables left in the guest room. Safe deposit
+                    lockers are available free of charge in your room. All disputes are subject to the jurisdiction of
+                    Bengalauru Court Only.</p>
+                <p>Foreigners other than Indian Nationals are required to pay their bill in convertible currency.</p>
+                <p>All Food & Beverages served MUST be arranged through our In-Room Dining facility or at any of our
+                    restaurants. Food and Beverage from an outside vendor or catering company will not be permitted on
+                    our hotel premises.</p>
+                <p>All rates mentioned above are exclusive of taxes. Any Government taxes would be charged extra.</p>
+                <p>I agree to pay charges incurred by me during my stay in the hotel, and to settle my account once I
+                    have been billed for amounts up to Rs 50,000/- unless prior arrangements have been made.</p>
+                <p>Any cash settlements above Rs 50,000/- are required to be supported with the copy of a valid PAN
+                    Card.</p>
+            </div>
+
+            <div class="signature">
+                <div class="column">
+                    <div class="label">Front Desk:</div>
+                    <div class="value">_________________</div>
+                </div>
+                <div class="column">
+                    <div class="label">Duty Manager:</div>
+                    <div class="value">_________________</div>
+                </div>
+                <div class="column">
+                    <div class="label">Ms. Ondhiya:</div>
+                    <div class="value">_________________</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

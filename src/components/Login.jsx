@@ -72,10 +72,12 @@ function Login() {
       const response = await axios.get(
         `${API_URL}/api/v1/auth/sendOtp?phoneNumber=${phone}`
       );
+
       setMessage(response.data.message);
       setShowOTPField(true);
       setOtpSent(true);
       setCanResendOTP(false);
+      setOTP(response.data.otp);
       setCountdown(120);
     } catch (error) {
       console.error(error);

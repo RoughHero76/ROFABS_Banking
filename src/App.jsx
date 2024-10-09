@@ -22,11 +22,14 @@ import AddPaymentHistory from './Views/Admin/Parts/AddPaymentHistory';
 //TransactionHistory
 import TransactionHistory from './Views/Admin/Parts/TransactionHistory';
 
+import PdfView from './Views/pdfView';
+
 
 const App = () => {
   return (
     <>
       <Routes>
+        <Route path="/pdfView" element={<PdfView />} />
         <Route path="/" element={<LoginPageFirst />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
